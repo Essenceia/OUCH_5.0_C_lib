@@ -90,11 +90,48 @@
 	    <Value name="COMPANY_DIRECT_LISTING" value="e"/>
 	</Enum>
 
+	<Enum name="eEventCode" type="char_t" dbtype="CHAR(1)">
+    	<Value name="START_OF_DAY" value="S"/>
+    	<Value name="END_OF_DAY" value="E"/>
+    </Enum>
+<Enum name="eLiquidityFlags" type="char_t" dbtype="CHAR(1)">
+    <Value name="ADDED" value="'A'"/>
+    <Value name="CLOSING_CROSS" value="'C'"/>
+    <Value name="RETAIL_DESIGNATED_ADDING" value="'e'"/>
+    <Value name="HALT_IPO_CROSS" value="'H'"/>
+    <Value name="AFTER_HOURS_CLOSING_CROSS" value="'i'"/>
+    <Value name="NON_DISPLAYED_ADDING" value="'J'"/>
+    <Value name="RPI_ORDER_PROVIDES_LIQUIDITY" value="'j'"/>
+    <Value name="ADDED_LIQUIDITY_MIDPOINT" value="'k'"/>
+    <Value name="HALT_CROSS" value="'K'"/>
+    <Value name="CLOSING_CROSS_IMBALANCE" value="'L'"/>
+    <Value name="OPENING_CROSS_IMBALANCE" value="'M'"/>
+    <Value name="REMOVED_LIQUIDITY_MIDPOINT" value="'m'"/>
+    <Value name="PASSIVE_MIDPOINT_EXECUTION" value="'N'"/>
+    <Value name="MIDPOINT_EXTENDED_LIFE_ORDER_EXECUTION" value="'n'"/>
+    <Value name="OPENING_CROSS" value="'O'"/>
+    <Value name="REMOVED_PRICE_IMPROVING_NON_DISPLAYED" value="'p'"/>
+    <Value name="RMO_RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT" value="'q'"/>
+    <Value name="REMOVED" value="'R'"/>
+    <Value name="RETAIL_ORDER_REMOVES_RPI_LIQUIDITY" value="'r'"/>
+    <Value name="RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT_OTHER" value="'t'"/>
+    <Value name="SUPPLEMENTAL_ORDER_EXECUTION" value="'0'"/>
+    <Value name="DISPLAYED_ADDING_ORDER_IMPROVES_NBBO" value="'7'"/>
+    <Value name="DISPLAYED_ADDING_ORDER_SETS_QBBO" value="'8'"/>
+    <Value name="RPI_ORDER_PROVIDES_LIQUIDITY_NO_RPII" value="'1'"/>
+</Enum>
+	<Enum name="eAIQStrategy" type="char_t" dbtype="CHAR(1)">
+    	<Value name="CANCEL_OLDEST" value="O"/>
+    	<Value name="CANCEL_NEWEST" value="O"/>
+    	<Value name="END_OF_DAY" value="E"/>
+    </Enum>
+
+
 </Enums>
 
 <Structs>
 
-	<Struct name="entry_order" len="12" id="O" database="true">
+	<Struct name="entry_order_request" len="12" id="O" database="true" inbound="true">
 	    <Field name="message_type" offset="0" len="1" type="char_t"/>
 	    <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
 	    <Field name="side" offset="5" len="1" type="eSide"/>
@@ -110,7 +147,7 @@
 		<Field name="appendage_length" offset="45" len="2" type="u16_t"/>
 		<Field name="optional_appendage" offset="47" len="8" type="uOptionalFields"/>
 	</Struct>
-<Struct name="replace_order_request" len="42" id="U" database="true">
+<Struct name="replace_order_request" len="42" id="U" database="true" inbound="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="orig_user_ref_num" offset="1" len="4" type="u32_t"/>
     <Field name="user_ref_num" offset="5" len="4" type="u32_t"/>
@@ -124,7 +161,7 @@
     <Field name="optional_appendage" offset="40" len="var" type="uOptionalFields"/>
 </Struct>
 
-<Struct name="cancel_order_request" len="9" id="X" database="true">
+<Struct name="cancel_order_request" len="9" id="X" database="true" inbound="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
     <Field name="quantity" offset="5" len="4" type="u32_t"/>
@@ -136,17 +173,17 @@
     <Field name="quantity" offset="6" len="4" type="u32_t"/>
 </Struct>
 
-<Struct name="account_query_request" len="1" id="Q" database="true">
+<Struct name="account_query_request" len="1" id="Q" database="true" inbound="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
 </Struct>
 
-<Struct name="system_event_message" len="10" id="S" database="true">
+<Struct name="system_event_message" len="10" id="S" database="true" inbound="false">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
-    <Field name="event_code" offset="9" len="1" type="char_t"/>
+    <Field name="event_code" offset="9" len="1" type="eEventCode"/>
 </Struct>
 
-<Struct name="order_accepted" len="76" id="A" database="true">
+<Struct name="order_accepted" len="76" id="A" database="true" inbound="false">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
@@ -165,14 +202,14 @@
     <Field name="appendage_length" offset="62" len="2" type="u16_t"/>
     <Field name="optional_appendage" offset="64" len="var" type="uOptionalFields"/>
 </Struct>
-<Struct name="replaced_message" len="68" id="U" database="true">
+
+<Struct name="replaced_message" len="68" id="U" database="true" inbound="false">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="orig_user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="user_ref_num" offset="13" len="4" type="u32_t"/>
     <Field name="side" offset="17" len="1" type="eSide"/>
     <Field name="quantity" offset="18" len="4" type="u32_t"/>
-    <Field name="symbol" offset="22" len="8" type="char_8_t"/>
     <Field name="price" offset="30" len="8" type="price_t"/>
     <Field name="time_in_force" offset="38" len="1" type="eTimeInForce"/>
     <Field name="display" offset="39" len="1" type="eDisplay"/>
@@ -186,7 +223,7 @@
     <Field name="optional_appendage" offset="68" len="var" type="uOptionalFields"/>
 </Struct>
 
-<Struct name="order_canceled" len="18" id="C" database="true">
+<Struct name="order_canceled" len="18" id="C" database="true" inbound="false">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
@@ -194,7 +231,7 @@
     <Field name="reason" offset="17" len="1" type="eOrderCancelReason"/>
 </Struct>
 
-<Struct name="aiq_canceled_message" len="32" id="D" database="true">
+<Struct name="aiq_canceled_message" len="32" id="D" database="true" inbound="false">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
@@ -202,8 +239,8 @@
     <Field name="reason" offset="17" len="1" type="eOrderCancelReason"/>
     <Field name="quantity_prevented_from_trading" offset="18" len="4" type="u32_t"/>
     <Field name="execution_price" offset="22" len="8" type="price_t"/>
-    <Field name="liquidity_flag" offset="30" len="1" type="char_t"/>
-    <Field name="aiq_strategy" offset="31" len="1" type="char_t"/>
+    <Field name="liquidity_flag" offset="30" len="1" type="eLiquidityFlags"/>
+    <Field name="aiq_strategy" offset="31" len="1" type="eAIQStategy"/>
 </Struct>
 <Struct name="executed_message" len="36" id="E" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
