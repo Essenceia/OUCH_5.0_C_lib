@@ -47,11 +47,6 @@
     	<Value name="OTHER" value="O"/>
     </Enum>
 
-	<Enum name="eInterMarket_Sweep_Eligibility" type="char_t" dbtype="CHAR(1)">
-    	<Value name="ELIGIBLE" value="Y"/>
-    	<Value name="NOT_ELIGIBLE" value="N"/>
-    </Enum>
-
 	<Enum name="eCrossType" type="char_t" dbtype="CHAR(1)">
     	<Value name="CONTINUOUS_MARKET" value="N"/>
     	<Value name="OPENING_CROSS" value="O"/>
@@ -63,11 +58,37 @@
     	<Value name="AFTER_HOURS_CLOSE" value="A"/>
     </Enum>
 
-	<Enum name="eInterMarket_Sweep_Eligibility" type="char_t" dbtype="CHAR(1)">
+	<Enum name="eEligibility" type="char_t" dbtype="CHAR(1)">
     	<Value name="ELIGIBLE" value="Y"/>
     	<Value name="NOT_ELIGIBLE" value="N"/>
     </Enum>
 
+	<Enum name="eOrderState" type="char_t" dbtype="CHAR(1)">
+    	<Value name="ORDER_LIVE" value="L"/>
+    	<Value name="ORDER_DEAD" value="D"/>
+    </Enum>
+
+	<Enum name="eReason" type="char_t" dbtype="CHAR(1)">
+    	<Value name="ORDER_LIVE" value="L"/>
+    	<Value name="ORDER_DEAD" value="D"/>
+    </Enum>
+
+	<Enum name="eOrderCancelReason" type="char_t" dbtype="CHAR(1)">
+	    <Value name="REGULATORY_RESTRICTION" value="D"/>
+	    <Value name="CLOSING_CROSS" value="E"/>
+	    <Value name="POST_ONLY_PRICE_SLID" value="F"/>
+	    <Value name="POST_ONLY_CONTRA_SIDE" value="G"/>
+	    <Value name="HALTED" value="H"/>
+	    <Value name="IMMEDIATE_OR_CANCEL" value="I"/>
+	    <Value name="MARKET_COLLARS" value="K"/>
+	    <Value name="SELF_MATCH_PREVENTION" value="Q"/>
+	    <Value name="SUPERVISORY" value="S"/>
+	    <Value name="TIMEOUT" value="T"/>
+	    <Value name="USER_REQUESTED_CANCEL" value="U"/>
+	    <Value name="OPEN_PROTECTION" value="X"/>
+	    <Value name="SYSTEM_CANCEL" value="Z"/>
+	    <Value name="COMPANY_DIRECT_LISTING" value="e"/>
+	</Enum>
 
 </Enums>
 
@@ -80,12 +101,12 @@
 	    <Field name="quantity" offset="6" len="4" type="u32_t"/>
 	    <Field name="symbol" offset="10" len="8" type="char_8_t"/>
 	    <Field name="price" offset="18" len="8" type="price_t"/>
-	    <Field name="time_in_force" offset="26" len="1" type="char_t"/>
+	    <Field name="time_in_force" offset="26" len="1" type="eTimeInForce"/>
 	    <Field name="display" offset="27" len="1" type="char_t"/>
 	    <Field name="capacity" offset="28" len="1" type="eCapacity"/>
-		<Field name="inter_market_sweep_eligibility" offset="29" len="1" type="eInterMarket_Sweep_Eligibility"/>
+		<Field name="inter_market_sweep_eligibility" offset="29" len="1" type="eEligibility"/>
 		<Field name="cross_type" offset="30" len="1" type="eCrossType"/>
-		<Field name="ClOrdID" offset="31" len="14" type="char_14_t"/>
+		<Field name="CIOrdID" offset="31" len="14" type="char_14_t"/>
 		<Field name="appendage_length" offset="45" len="2" type="u16_t"/>
 		<Field name="optional_appendage" offset="47" len="8" type="uOptionalFields"/>
 	</Struct>
@@ -95,10 +116,10 @@
     <Field name="user_ref_num" offset="5" len="4" type="u32_t"/>
     <Field name="quantity" offset="9" len="4" type="u32_t"/>
     <Field name="price" offset="13" len="8" type="price_t"/>
-    <Field name="time_in_force" offset="21" len="1" type="char_t"/>
-    <Field name="display" offset="22" len="1" type="char_t"/>
-    <Field name="eligibility" offset="23" len="1" type="char_t"/>
-    <Field name="clordid" offset="24" len="14" type="char_14_t"/>
+    <Field name="time_in_force" offset="21" len="1" type="eTimeInForce"/>
+    <Field name="display" offset="22" len="1" type="eDisplay"/>
+    <Field name="inter_market_sweep_eligibility" offset="23" len="1" type="eEligibility"/>
+    <Field name="CIOrdID" offset="24" len="14" type="char_14_t"/>
     <Field name="appendage_length" offset="38" len="2" type="u16_t"/>
     <Field name="optional_appendage" offset="40" len="var" type="uOptionalFields"/>
 </Struct>
@@ -111,62 +132,74 @@
 <Struct name="modify_order_request" len="10" id="M" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
-    <Field name="side" offset="5" len="1" type="char_t"/>
+    <Field name="side" offset="5" len="1" type="eSide"/>
     <Field name="quantity" offset="6" len="4" type="u32_t"/>
 </Struct>
+
+<Struct name="account_query_request" len="1" id="Q" database="true">
+    <Field name="message_type" offset="0" len="1" type="char_t"/>
+</Struct>
+
 <Struct name="system_event_message" len="10" id="S" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="event_code" offset="9" len="1" type="char_t"/>
 </Struct>
+
 <Struct name="order_accepted" len="76" id="A" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
-    <Field name="side" offset="13" len="1" type="char_t"/>
+    <Field name="side" offset="13" len="1" type="eSide"/>
     <Field name="quantity" offset="14" len="4" type="u32_t"/>
     <Field name="symbol" offset="18" len="8" type="char_8_t"/>
     <Field name="price" offset="26" len="8" type="price_t"/>
-    <Field name="time_in_force" offset="34" len="1" type="char_t"/>
-    <Field name="display" offset="35" len="1" type="char_t"/>
-    <Field name="order_reference_number" offset="36" len="8" type="numeric_t"/>
-    <Field name="capacity" offset="44" len="1" type="char_t"/>
-    <Field name="inter_market_sweep_eligibility" offset="45" len="1" type="char_t"/>
-    <Field name="eligibility" offset="46" len="1" type="char_t"/>
-    <Field name="cross_type" offset="47" len="1" type="char_t"/>
-    <Field name="order_state" offset="48" len="1" type="char_t"/>
-    <Field name="clordid" offset="49" len="14" type="char_14_t"/>
-    <Field name="appendage_length" offset="63" len="2" type="u16_t"/>
-    <Field name="optional_appendage" offset="65" len="var" type="uOptionalFields"/>
+    <Field name="time_in_force" offset="34" len="1" type="eTimeInForce"/>
+    <Field name="display" offset="35" len="1" type="eDisplay"/>
+    <Field name="order_reference_number" offset="36" len="8" type="u64_t"/>
+    <Field name="capacity" offset="44" len="1" type="eCapacity"/>
+    <Field name="inter_market_sweep_eligibility" offset="45" len="1" type="eEligibility"/>
+    <Field name="cross_type" offset="46" len="1" type="eCrossType"/>
+    <Field name="order_state" offset="47" len="1" type="eOrderState"/>
+    <Field name="CIOrdID" offset="48" len="14" type="char_14_t"/>
+    <Field name="appendage_length" offset="62" len="2" type="u16_t"/>
+    <Field name="optional_appendage" offset="64" len="var" type="uOptionalFields"/>
 </Struct>
-// wrong offset
 <Struct name="replaced_message" len="68" id="U" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="orig_user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="user_ref_num" offset="13" len="4" type="u32_t"/>
-    <Field name="side" offset="17" len="1" type="char_t"/>
+    <Field name="side" offset="17" len="1" type="eSide"/>
     <Field name="quantity" offset="18" len="4" type="u32_t"/>
     <Field name="symbol" offset="22" len="8" type="char_8_t"/>
     <Field name="price" offset="30" len="8" type="price_t"/>
-    <Field name="time_in_force" offset="38" len="1" type="char_t"/>
-    <Field name="display" offset="39" len="1" type="char_t"/>
-    <Field name="order_reference_number" offset="40" len="8" type="numeric_t"/>
-    <Field name="capacity" offset="48" len="1" type="char_t"/>
-    <Field name="inter_market_sweep_eligibility" offset="49" len="1" type="char_t"/>
-    <Field name="eligibility" offset="50" len="1" type="char_t"/>
-    <Field name="cross_type" offset="51" len="1" type="char_t"/>
-    <Field name="order_state" offset="52" len="1" type="char_t"/>
-    <Field name="clordid" offset="53" len="14" type="char_14_t"/>
-    <Field name="appendage_length" offset="67" len="2" type="numeric_t"/>
-    <Field name="optional_appendage" offset="69" len="var" type="uOptionalFields"/>
+    <Field name="time_in_force" offset="38" len="1" type="eTimeInForce"/>
+    <Field name="display" offset="39" len="1" type="eDisplay"/>
+    <Field name="order_reference_number" offset="40" len="8" type="u64_t"/>
+    <Field name="capacity" offset="48" len="1" type="eCapacity"/>
+    <Field name="inter_market_sweep_eligibility" offset="49" len="1" type="eEligibility"/>
+    <Field name="cross_type" offset="50" len="1" type="eCrossType"/>
+    <Field name="order_state" offset="51" len="1" type="eOrderState"/>
+    <Field name="CIOrdID" offset="52" len="14" type="char_14_t"/>
+    <Field name="appendage_length" offset="66" len="2" type="u16_t"/>
+    <Field name="optional_appendage" offset="68" len="var" type="uOptionalFields"/>
 </Struct>
+
+<Struct name="order_canceled" len="18" id="C" database="true">
+    <Field name="message_type" offset="0" len="1" type="char_t"/>
+    <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
+    <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
+    <Field name="quantity" offset="13" len="4" type="u32_t"/>
+    <Field name="reason" offset="17" len="1" type="eOrderCancelReason"/>
+</Struct>
+
 <Struct name="aiq_canceled_message" len="32" id="D" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
-    <Field name="decrement_shares" offset="13" len="4" type="numeric_t"/>
-    <Field name="reason" offset="17" len="1" type="char_t"/>
+    <Field name="decrement_shares" offset="13" len="4" type="u32_t"/>
+    <Field name="reason" offset="17" len="1" type="eOrderCancelReason"/>
     <Field name="quantity_prevented_from_trading" offset="18" len="4" type="u32_t"/>
     <Field name="execution_price" offset="22" len="8" type="price_t"/>
     <Field name="liquidity_flag" offset="30" len="1" type="char_t"/>
@@ -180,7 +213,7 @@
     <Field name="price" offset="17" len="8" type="price_t"/>
     <Field name="liquidity_flag" offset="25" len="1" type="char_t"/>
     <Field name="match_number" offset="26" len="8" type="numeric_t"/>
-    <Field name="appendage_length" offset="34" len="2" type="numeric_t"/>
+    <Field name="appendage_length" offset="34" len="2" type="u16_t"/>
 </Struct>
 <Struct name="broken_trade_message" len="36" id="B" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
@@ -188,14 +221,14 @@
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="match_number" offset="13" len="8" type="numeric_t"/>
     <Field name="reason" offset="21" len="1" type="char_t"/>
-    <Field name="clordid" offset="22" len="14" type="char_14_t"/>
+    <Field name="CIOrdID" offset="22" len="14" type="char_14_t"/>
 </Struct>
 <Struct name="rejected_order_message" len="29" id="J" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="reason" offset="13" len="2" type="numeric_t"/>
-    <Field name="clordid" offset="15" len="14" type="char_14_t"/>
+    <Field name="CIOrdID" offset="15" len="14" type="char_14_t"/>
 </Struct>
 <Struct name="cancel_pending_message" len="13" id="P" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
@@ -212,14 +245,14 @@
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="price" offset="13" len="8" type="price_t"/>
-    <Field name="display" offset="21" len="1" type="char_t"/>
-    <Field name="order_reference_number" offset="22" len="8" type="numeric_t"/>
+    <Field name="display" offset="21" len="1" type="eDisplay"/>
+    <Field name="order_reference_number" offset="22" len="8" type="u64_t"/>
 </Struct>
 <Struct name="order_modified_message" len="18" id="M" database="true">
     <Field name="message_type" offset="0" len="1" type="char_t"/>
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
-    <Field name="side" offset="13" len="1" type="char_t"/>
+    <Field name="side" offset="13" len="1" type="eSide"/>
     <Field name="quantity" offset="14" len="4" type="numeric_t"/>
 </Struct>
 <Struct name="order_restated_message" len="18" id="R" database="true">
@@ -227,7 +260,7 @@
     <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
     <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
     <Field name="reason" offset="13" len="1" type="char_t"/>
-    <Field name="appendage_length" offset="14" len="2" type="numeric_t"/>
+    <Field name="appendage_length" offset="14" len="2" type="u16_t"/>
     <Field name="optional_appendage" offset="16" len="var" type="options"/>
 </Struct>
 <Struct name="account_query_response_message" len="13" id="Q" database="true">
