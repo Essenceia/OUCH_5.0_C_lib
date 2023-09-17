@@ -24,6 +24,27 @@
       <Member name="group_id" len="2" type="u16_t"/>
       <Member name="shares_located" len="1" type="eYesNo"/>
     </Union>
+
+    <Union name="uOrderReplacedOption">
+      <Member name="firm" len="4" type="char_4_t"/>
+      <Member name="min_qty" len="4" type="u32_t"/>
+      <Member name="max_floor" len="4" type="u32_t"/>
+      <Member name="price_type" len="1" type="ePriceType"/>
+      <Member name="post_only" len="1" type="ePostOnly"/>
+      <Member name="expire_time" len="4" type="u32_t"/>
+      <Member name="trade_now" len="1" type="eYesNo"/>
+      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="bbo_weight_indicator" len="1" type="eBBOWeightIndicator"/>
+    </Union>
+
+
+    <Union name="uOrderRestartedOption">
+      <Member name="display_quantity" len="4" type="u32_t"/>
+      <Member name="display_price" len="8" type="u64_t"/>
+      <Member name="secondary_ord_ref_num" len="8" type="u64_t"/>
+    </Union>
+
+
   </Unions>
   <Enums>
     <Enum name="eHandleInst" type="char_t" dbtype="CHAR(1)">
@@ -389,7 +410,7 @@
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
       <Field name="reason" offset="13" len="1" type="eOrderRejectReason"/>
       <Field name="appendage_length" offset="14" len="2" type="u16_t"/>
-      <Field name="optional_appendage" offset="16" len="var" type="uOptionalFields"/>
+      <Field name="optional_appendage" offset="16" len="var" type="uOrderRestartedOption"/>
     </Struct>
     <Struct name="account_query_response_message" len="13" id="Q" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
