@@ -7,10 +7,10 @@
       <Member name="customer_type" len="1" type="eCustomerType"/>
       <Member name="max_floor" len="4" type="u32_t"/>
       <Member name="price_type" len="1" type="ePriceType"/>
-      <Member name="peg_offset" len="4" type="price_t"/>
+      <Member name="peg_offset" len="4" type="sprice_t"/>
       <Member name="discretion_price" len="8" type="price_t"/>
       <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
-      <Member name="discretion_peg_offset" len="4" type="price_t"/>
+      <Member name="discretion_peg_offset" len="4" type="sprice_t"/>
       <Member name="post_only" len="1" type="ePostOnly"/>
       <Member name="random_reserves" len="4" type="u32_t"/>
       <Member name="route" len="4" type="char_4_t"/>
@@ -24,10 +24,10 @@
       <Member name="min_qty" len="4" type="u32_t"/>
       <Member name="max_floor" len="4" type="u32_t"/>
       <Member name="price_type" len="1" type="ePriceType"/>
-      <Member name="peg_offset" len="4" type="price_t"/>
+      <Member name="peg_offset" len="4" type="sprice_t"/>
       <Member name="discretion_price" len="8" type="price_t"/>
       <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
-      <Member name="discretion_peg_offset" len="4" type="price_t"/>
+      <Member name="discretion_peg_offset" len="4" type="sprice_t"/>
       <Member name="post_only" len="1" type="ePostOnly"/>
       <Member name="random_reserves" len="4" type="u32_t"/>
       <Member name="expire_time" len="4" type="u32_t"/>
@@ -42,10 +42,10 @@
       <Member name="customer_type" len="1" type="eCustomerType"/>
       <Member name="max_floor" len="4" type="u32_t"/>
       <Member name="price_type" len="1" type="ePriceType"/>
-      <Member name="peg_offset" len="4" type="price_t"/>
+      <Member name="peg_offset" len="4" type="sprice_t"/>
       <Member name="discretion_price" len="8" type="price_t"/>
       <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
-      <Member name="discretion_peg_offset" len="4" type="price_t"/>
+      <Member name="discretion_peg_offset" len="4" type="sprice_t"/>
       <Member name="post_only" len="1" type="ePostOnly"/>
       <Member name="random_reserves" len="4" type="u32_t"/>
       <Member name="route" len="4" type="char_4_t"/>
