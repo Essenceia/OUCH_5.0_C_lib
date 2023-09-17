@@ -1,8 +1,42 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Model basefilename="nasdaq_ouch" generate_test_code="false" guard="VPLAT_NASDAQ_TOTALVIEW_OUCH" idname="TYPE" idtype="char_t" namespace="nasdaq_ouch">
   <Unions>
-    <Union name="uOptionalFields">
-      <Member name="secondary_ord_ref_num" len="8" type="u64_t"/>
+    <Union name="uEntryOrderOption">
+      <Member name="firm" len="4" type="char_4_t"/>
+      <Member name="min_qty" len="4" type="u32_t"/>
+      <Member name="customer_type" len="1" type="eCustomerType"/>
+      <Member name="max_floor" len="4" type="u32_t"/>
+      <Member name="price_type" len="1" type="ePriceType"/>
+      <Member name="peg_offset" len="4" type="price_t"/>
+      <Member name="discretion_price" len="8" type="price_t"/>
+      <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
+      <Member name="discretion_peg_offset" len="4" type="price_t"/>
+      <Member name="post_only" len="1" type="ePostOnly"/>
+      <Member name="random_reserves" len="4" type="u32_t"/>
+      <Member name="route" len="4" type="char_4_t"/>
+      <Member name="expire_time" len="4" type="u32_t"/>
+      <Member name="trade_now" len="1" type="eYesNo"/>
+      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="group_id" len="2" type="u16_t"/>
+      <Member name="shares_located" len="1" type="eYesNo"/>
+    </Union>
+    <Union name="uReplaceOrderOption">
+      <Member name="min_qty" len="4" type="u32_t"/>
+      <Member name="max_floor" len="4" type="u32_t"/>
+      <Member name="price_type" len="1" type="ePriceType"/>
+      <Member name="peg_offset" len="4" type="price_t"/>
+      <Member name="discretion_price" len="8" type="price_t"/>
+      <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
+      <Member name="discretion_peg_offset" len="4" type="price_t"/>
+      <Member name="post_only" len="1" type="ePostOnly"/>
+      <Member name="random_reserves" len="4" type="u32_t"/>
+      <Member name="expire_time" len="4" type="u32_t"/>
+      <Member name="trade_now" len="1" type="eYesNo"/>
+      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="group_id" len="2" type="u16_t"/>
+      <Member name="shares_located" len="1" type="eYesNo"/>
+    </Union>
+    <Union name="uOrderAcceptedOption">
       <Member name="firm" len="4" type="char_4_t"/>
       <Member name="min_qty" len="4" type="u32_t"/>
       <Member name="customer_type" len="1" type="eCustomerType"/>
@@ -24,7 +58,6 @@
       <Member name="group_id" len="2" type="u16_t"/>
       <Member name="shares_located" len="1" type="eYesNo"/>
     </Union>
-
     <Union name="uOrderReplacedOption">
       <Member name="firm" len="4" type="char_4_t"/>
       <Member name="min_qty" len="4" type="u32_t"/>
@@ -36,15 +69,11 @@
       <Member name="handle_inst" len="1" type="eHandleInst"/>
       <Member name="bbo_weight_indicator" len="1" type="eBBOWeightIndicator"/>
     </Union>
-
-
     <Union name="uOrderRestartedOption">
       <Member name="display_quantity" len="4" type="u32_t"/>
       <Member name="display_price" len="8" type="u64_t"/>
       <Member name="secondary_ord_ref_num" len="8" type="u64_t"/>
     </Union>
-
-
   </Unions>
   <Enums>
     <Enum name="eHandleInst" type="char_t" dbtype="CHAR(1)">
@@ -264,7 +293,7 @@
       <Field name="cross_type" offset="30" len="1" type="eCrossType"/>
       <Field name="CIOrdID" offset="31" len="14" type="char_14_t"/>
       <Field name="appendage_length" offset="45" len="2" type="u16_t"/>
-      <Field name="optional_appendage" offset="47" len="8" type="uOptionalFields"/>
+      <Field name="optional_appendage" offset="47" len="8" type="uEntryOrderOption"/>
     </Struct>
     <Struct name="replace_order_request" len="42" id="U" database="true" inbound="true">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
@@ -277,7 +306,7 @@
       <Field name="inter_market_sweep_eligibility" offset="23" len="1" type="eEligibility"/>
       <Field name="CIOrdID" offset="24" len="14" type="char_14_t"/>
       <Field name="appendage_length" offset="38" len="2" type="u16_t"/>
-      <Field name="optional_appendage" offset="40" len="var" type="uOptionalFields"/>
+      <Field name="optional_appendage" offset="40" len="var" type="uReplaceOrderOption"/>
     </Struct>
     <Struct name="cancel_order_request" len="9" id="X" database="true" inbound="true">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
@@ -315,7 +344,7 @@
       <Field name="order_state" offset="47" len="1" type="eOrderState"/>
       <Field name="CIOrdID" offset="48" len="14" type="char_14_t"/>
       <Field name="appendage_length" offset="62" len="2" type="u16_t"/>
-      <Field name="optional_appendage" offset="64" len="var" type="uOptionalFields"/>
+      <Field name="optional_appendage" offset="64" len="var" type="uOrderAcceptedOption"/>
     </Struct>
     <Struct name="replaced_message" len="68" id="U" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
@@ -334,7 +363,7 @@
       <Field name="order_state" offset="51" len="1" type="eOrderState"/>
       <Field name="CIOrdID" offset="52" len="14" type="char_14_t"/>
       <Field name="appendage_length" offset="66" len="2" type="u16_t"/>
-      <Field name="optional_appendage" offset="68" len="var" type="uOptionalFields"/>
+      <Field name="optional_appendage" offset="68" len="var" type="uOrderReplacedOption"/>
     </Struct>
     <Struct name="order_canceled" len="18" id="C" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
