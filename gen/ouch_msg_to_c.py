@@ -14,14 +14,18 @@ def parse_enum(enums, enum_f):
     for enum in enums:
         e_name = enum['@name']
         e_type = enum['@type']
-        enum_f.write("typedef "+e_type+" enum {\n")
+        enum_f.write("typedef enum {\n")
         e_v = enum['Value']
         for i in range(len(e_v)):
             n = e_v[i]['@name']
             v = e_v[i]['@value']
             if not(i == 0):
                 enum_f.write(",\n")
-            enum_f.write('\t'+n+" = '"+v+"'")
+            enum_f.write('\t'+n+" = ")
+            if (e_type == "char_t"):
+                enum_f.write("'"+v+"'")
+            else:
+                enum_f.write(v)
         enum_f.write("\n} "+e_name+";\n\n")
 
 def main():
