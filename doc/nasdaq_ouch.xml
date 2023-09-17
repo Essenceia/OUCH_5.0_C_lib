@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Model basefilename="nasdaq_ouch" generate_test_code="false" guard="VPLAT_NASDAQ_TOTALVIEW_OUCH" idname="TYPE" idtype="char_t" namespace="nasdaq_ouch">
-  <Unions>
+<Unions>
     <Union name="uEntryOrderOption">
       <Member name="firm" len="4" type="char_4_t"/>
       <Member name="min_qty" len="4" type="u32_t"/>
@@ -104,8 +104,8 @@
       <Value name="POST_NO" value="N"/>
     </Enum>
     <Enum name="eCustomerType" type="char_t" dbtype="CHAR(1)">
-      <Value name="RETAIL" value="R"/>
-      <Value name="NOT_RETAIL" value="N"/>
+      <Value name="CUSTOMER_RETAIL" value="R"/>
+      <Value name="CUSTOMER_NOT_RETAIL" value="N"/>
     </Enum>
     <Enum name="eDiscretionPriceType" type="char_t" dbtype="CHAR(1)">
       <Value name="DISCRETION_PRICE_TYPE_LIMIT" value="L"/>
@@ -163,55 +163,51 @@
       <Value name="ORDER_LIVE" value="L"/>
       <Value name="ORDER_DEAD" value="D"/>
     </Enum>
-    <Enum name="eReason" type="char_t" dbtype="CHAR(1)">
-      <Value name="ORDER_LIVE" value="L"/>
-      <Value name="ORDER_DEAD" value="D"/>
-    </Enum>
     <Enum name="eOrderCancelReason" type="char_t" dbtype="CHAR(1)">
-      <Value name="REGULATORY_RESTRICTION" value="D"/>
-      <Value name="CLOSING_CROSS" value="E"/>
-      <Value name="POST_ONLY_PRICE_SLID" value="F"/>
-      <Value name="POST_ONLY_CONTRA_SIDE" value="G"/>
-      <Value name="HALTED" value="H"/>
-      <Value name="IMMEDIATE_OR_CANCEL" value="I"/>
-      <Value name="MARKET_COLLARS" value="K"/>
-      <Value name="SELF_MATCH_PREVENTION" value="Q"/>
-      <Value name="SUPERVISORY" value="S"/>
-      <Value name="TIMEOUT" value="T"/>
-      <Value name="USER_REQUESTED_CANCEL" value="U"/>
-      <Value name="OPEN_PROTECTION" value="X"/>
-      <Value name="SYSTEM_CANCEL" value="Z"/>
-      <Value name="COMPANY_DIRECT_LISTING" value="e"/>
+      <Value name="CANCEL_REGULATORY_RESTRICTION" value="D"/>
+      <Value name="CANCEL_CLOSING_CROSS" value="E"/>
+      <Value name="CANCEL_POST_ONLY_PRICE_SLID" value="F"/>
+      <Value name="CANCEL_POST_ONLY_CONTRA_SIDE" value="G"/>
+      <Value name="CANCEL_HALTED" value="H"/>
+      <Value name="CANCEL_IMMEDIATE_OR_CANCEL" value="I"/>
+      <Value name="CANCEL_MARKET_COLLARS" value="K"/>
+      <Value name="CANCEL_SELF_MATCH_PREVENTION" value="Q"/>
+      <Value name="CANCEL_SUPERVISORY" value="S"/>
+      <Value name="CANCEL_TIMEOUT" value="T"/>
+      <Value name="CANCEL_USER_REQUESTED_CANCEL" value="U"/>
+      <Value name="CANCEL_OPEN_PROTECTION" value="X"/>
+      <Value name="CANCEL_SYSTEM_CANCEL" value="Z"/>
+      <Value name="CANCEL_COMPANY_DIRECT_LISTING" value="e"/>
     </Enum>
     <Enum name="eEventCode" type="char_t" dbtype="CHAR(1)">
       <Value name="START_OF_DAY" value="S"/>
       <Value name="END_OF_DAY" value="E"/>
     </Enum>
     <Enum name="eLiquidityFlags" type="char_t" dbtype="CHAR(1)">
-      <Value name="ADDED" value="A"/>
-      <Value name="CLOSING_CROSS" value="C"/>
-      <Value name="RETAIL_DESIGNATED_ADDING" value="e"/>
-      <Value name="HALT_IPO_CROSS" value="H"/>
-      <Value name="AFTER_HOURS_CLOSING_CROSS" value="i"/>
-      <Value name="NON_DISPLAYED_ADDING" value="J"/>
-      <Value name="RPI_ORDER_PROVIDES_LIQUIDITY" value="j"/>
-      <Value name="ADDED_LIQUIDITY_MIDPOINT" value="k"/>
-      <Value name="HALT_CROSS" value="K"/>
-      <Value name="CLOSING_CROSS_IMBALANCE" value="L"/>
-      <Value name="OPENING_CROSS_IMBALANCE" value="M"/>
-      <Value name="REMOVED_LIQUIDITY_MIDPOINT" value="m"/>
-      <Value name="PASSIVE_MIDPOINT_EXECUTION" value="N"/>
-      <Value name="MIDPOINT_EXTENDED_LIFE_ORDER_EXECUTION" value="n"/>
-      <Value name="OPENING_CROSS" value="O"/>
-      <Value name="REMOVED_PRICE_IMPROVING_NON_DISPLAYED" value="p"/>
-      <Value name="RMO_RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT" value="q"/>
-      <Value name="REMOVED" value="R"/>
-      <Value name="RETAIL_ORDER_REMOVES_RPI_LIQUIDITY" value="r"/>
-      <Value name="RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT_OTHER" value="t"/>
-      <Value name="SUPPLEMENTAL_ORDER_EXECUTION" value="0"/>
-      <Value name="DISPLAYED_ADDING_ORDER_IMPROVES_NBBO" value="7"/>
-      <Value name="DISPLAYED_ADDING_ORDER_SETS_QBBO" value="8"/>
-      <Value name="RPI_ORDER_PROVIDES_LIQUIDITY_NO_RPII" value="1"/>
+      <Value name="LIQUIDITY_ADDED" value="A"/>
+      <Value name="LIQUIDITY_CLOSING_CROSS" value="C"/>
+      <Value name="LIQUIDITY_RETAIL_DESIGNATED_ADDING" value="e"/>
+      <Value name="LIQUIDITY_HALT_IPO_CROSS" value="H"/>
+      <Value name="LIQUIDITY_AFTER_HOURS_CLOSING_CROSS" value="i"/>
+      <Value name="LIQUIDITY_NON_DISPLAYED_ADDING" value="J"/>
+      <Value name="LIQUIDITY_RPI_ORDER_PROVIDES_LIQUIDITY" value="j"/>
+      <Value name="LIQUIDITY_ADDED_LIQUIDITY_MIDPOINT" value="k"/>
+      <Value name="LIQUIDITY_HALT_CROSS" value="K"/>
+      <Value name="LIQUIDITY_CLOSING_CROSS_IMBALANCE" value="L"/>
+      <Value name="LIQUIDITY_OPENING_CROSS_IMBALANCE" value="M"/>
+      <Value name="LIQUIDITY_REMOVED_LIQUIDITY_MIDPOINT" value="m"/>
+      <Value name="LIQUIDITY_PASSIVE_MIDPOINT_EXECUTION" value="N"/>
+      <Value name="LIQUIDITY_MIDPOINT_EXTENDED_LIFE_ORDER_EXECUTION" value="n"/>
+      <Value name="LIQUIDITY_OPENING_CROSS" value="O"/>
+      <Value name="LIQUIDITY_REMOVED_PRICE_IMPROVING_NON_DISPLAYED" value="p"/>
+      <Value name="LIQUIDITY_RMO_RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT" value="q"/>
+      <Value name="LIQUIDITY_REMOVED" value="R"/>
+      <Value name="LIQUIDITY_RETAIL_ORDER_REMOVES_RPI_LIQUIDITY" value="r"/>
+      <Value name="LIQUIDITY_RETAIL_ORDER_REMOVES_NON_RPI_MIDPOINT_OTHER" value="t"/>
+      <Value name="LIQUIDITY_SUPPLEMENTAL_ORDER_EXECUTION" value="0"/>
+      <Value name="LIQUIDITY_DISPLAYED_ADDING_ORDER_IMPROVES_NBBO" value="7"/>
+      <Value name="LIQUIDITY_DISPLAYED_ADDING_ORDER_SETS_QBBO" value="8"/>
+      <Value name="LIQUIDITY_RPI_ORDER_PROVIDES_LIQUIDITY_NO_RPII" value="1"/>
     </Enum>
     <Enum name="eAIQStrategy" type="char_t" dbtype="CHAR(1)">
       <Value name="MPID_CANCEL_OLDEST" value="O"/>
@@ -224,54 +220,54 @@
       <Value name="ORG_ID_DECREMENT_BOTH_NO_DETAILS" value="y"/>
     </Enum>
     <Enum name="eBrokenTradeReason" type="char_t" dbtype="CHAR(1)">
-      <Value name="ERRONEOUS" value="E"/>
-      <Value name="CONSENT" value="C"/>
-      <Value name="SUPERVISOR" value="S"/>
-      <Value name="EXTERNAL" value="X"/>
+      <Value name="BROKEN_ERRONEOUS" value="E"/>
+      <Value name="BROKEN_CONSENT" value="C"/>
+      <Value name="BROKEN_SUPERVISOR" value="S"/>
+      <Value name="BROKEN_EXTERNAL" value="X"/>
     </Enum>
     <Enum name="eOrderRejectReason" type="u16_t" dbtype="HEX(4)">
-      <Value name="QUOTE_UNAVAILABLE" value="0x0001"/>
-      <Value name="DESTINATION_CLOSED" value="0x0002"/>
-      <Value name="INVALID_DISPLAY" value="0x0003"/>
-      <Value name="INVALID_MAX_FLOOR" value="0x0004"/>
-      <Value name="INVALID_PEG_TYPE" value="0x0005"/>
-      <Value name="FAT_FINGER" value="0x0006"/>
-      <Value name="HALTED" value="0x0007"/>
-      <Value name="ISO_NOT_ALLOWED" value="0x0008"/>
-      <Value name="INVALID_SIDE" value="0x0009"/>
-      <Value name="PROCESSING_ERROR" value="0x000A"/>
-      <Value name="CANCEL_PENDING" value="0x000B"/>
-      <Value name="FIRM_NOT_AUTHORIZED" value="0x000C"/>
-      <Value name="INVALID_MIN_QUANTITY" value="0x000D"/>
-      <Value name="NO_CLOSING_REFERENCE_PRICE" value="0x000E"/>
-      <Value name="OTHER" value="0x000F"/>
-      <Value name="CANCEL_NOT_ALLOWED" value="0x0010"/>
-      <Value name="PEGGING_NOT_ALLOWED" value="0x0011"/>
-      <Value name="CROSSED_MARKET" value="0x0012"/>
-      <Value name="INVALID_QUANTITY" value="0x0013"/>
-      <Value name="INVALID_CROSS_ORDER" value="0x0014"/>
-      <Value name="REPLACE_NOT_ALLOWED" value="0x0015"/>
-      <Value name="ROUTING_NOT_ALLOWED" value="0x0016"/>
-      <Value name="INVALID_SYMBOL" value="0x0017"/>
-      <Value name="TEST" value="0x0018"/>
-      <Value name="LATE_LOC_TOO_AGGRESSIVE" value="0x0019"/>
-      <Value name="RETAIL_NOT_ALLOWED" value="0x001A"/>
-      <Value name="INVALID_MIDPOINT_POST_ONLY_PRICE" value="0x001B"/>
-      <Value name="INVALID_DESTINATION" value="0x001C"/>
-      <Value name="INVALID_PRICE" value="0x001D"/>
-      <Value name="SHARES_EXCEED_THRESHOLD" value="0x001E"/>
-      <Value name="EXCEEDS_MAXIMUM_ALLOWED_NOTIONAL_VALUE" value="0x001F"/>
-      <Value name="RISK_AGGREGATE_EXPOSURE_EXCEEDED" value="0x0020"/>
-      <Value name="RISK_MARKET_IMPACT" value="0x0021"/>
-      <Value name="RISK_RESTRICTED_STOCK" value="0x0022"/>
-      <Value name="RISK_SHORT_SELL_RESTRICTED" value="0x0023"/>
-      <Value name="RISK_ORDER_TYPE_RESTRICTED" value="0x0024"/>
-      <Value name="RISK_EXCEEDS_ADV_LIMIT" value="0x0025"/>
-      <Value name="RISK_FAT_FINGER" value="0x0026"/>
-      <Value name="RISK_LOCATE_REQUIRED" value="0x0027"/>
-      <Value name="RISK_SYMBOL_MESSAGE_RATE_RESTRICTION" value="0x0028"/>
-      <Value name="RISK_PORT_MESSAGE_RATE_RESTRICTION" value="0x0029"/>
-      <Value name="RISK_DUPLICATE_MESSAGE_RATE_RESTRICTION" value="0x002A"/>
+      <Value name="REJECT_QUOTE_UNAVAILABLE" value="0x0001"/>
+      <Value name="REJECT_DESTINATION_CLOSED" value="0x0002"/>
+      <Value name="REJECT_INVALID_DISPLAY" value="0x0003"/>
+      <Value name="REJECT_INVALID_MAX_FLOOR" value="0x0004"/>
+      <Value name="REJECT_INVALID_PEG_TYPE" value="0x0005"/>
+      <Value name="REJECT_FAT_FINGER" value="0x0006"/>
+      <Value name="REJECT_HALTED" value="0x0007"/>
+      <Value name="REJECT_ISO_NOT_ALLOWED" value="0x0008"/>
+      <Value name="REJECT_INVALID_SIDE" value="0x0009"/>
+      <Value name="REJECT_PROCESSING_ERROR" value="0x000A"/>
+      <Value name="REJECT_CANCEL_PENDING" value="0x000B"/>
+      <Value name="REJECT_FIRM_NOT_AUTHORIZED" value="0x000C"/>
+      <Value name="REJECT_INVALID_MIN_QUANTITY" value="0x000D"/>
+      <Value name="REJECT_NO_CLOSING_REFERENCE_PRICE" value="0x000E"/>
+      <Value name="REJECT_OTHER" value="0x000F"/>
+      <Value name="REJECT_CANCEL_NOT_ALLOWED" value="0x0010"/>
+      <Value name="REJECT_PEGGING_NOT_ALLOWED" value="0x0011"/>
+      <Value name="REJECT_CROSSED_MARKET" value="0x0012"/>
+      <Value name="REJECT_INVALID_QUANTITY" value="0x0013"/>
+      <Value name="REJECT_INVALID_CROSS_ORDER" value="0x0014"/>
+      <Value name="REJECT_REPLACE_NOT_ALLOWED" value="0x0015"/>
+      <Value name="REJECT_ROUTING_NOT_ALLOWED" value="0x0016"/>
+      <Value name="REJECT_INVALID_SYMBOL" value="0x0017"/>
+      <Value name="REJECT_TEST" value="0x0018"/>
+      <Value name="REJECT_LATE_LOC_TOO_AGGRESSIVE" value="0x0019"/>
+      <Value name="REJECT_RETAIL_NOT_ALLOWED" value="0x001A"/>
+      <Value name="REJECT_INVALID_MIDPOINT_POST_ONLY_PRICE" value="0x001B"/>
+      <Value name="REJECT_INVALID_DESTINATION" value="0x001C"/>
+      <Value name="REJECT_INVALID_PRICE" value="0x001D"/>
+      <Value name="REJECT_SHARES_EXCEED_THRESHOLD" value="0x001E"/>
+      <Value name="REJECT_EXCEEDS_MAXIMUM_ALLOWED_NOTIONAL_VALUE" value="0x001F"/>
+      <Value name="REJECT_RISK_AGGREGATE_EXPOSURE_EXCEEDED" value="0x0020"/>
+      <Value name="REJECT_RISK_MARKET_IMPACT" value="0x0021"/>
+      <Value name="REJECT_RISK_RESTRICTED_STOCK" value="0x0022"/>
+      <Value name="REJECT_RISK_SHORT_SELL_RESTRICTED" value="0x0023"/>
+      <Value name="REJECT_RISK_ORDER_TYPE_RESTRICTED" value="0x0024"/>
+      <Value name="REJECT_RISK_EXCEEDS_ADV_LIMIT" value="0x0025"/>
+      <Value name="REJECT_RISK_FAT_FINGER" value="0x0026"/>
+      <Value name="REJECT_RISK_LOCATE_REQUIRED" value="0x0027"/>
+      <Value name="REJECT_RISK_SYMBOL_MESSAGE_RATE_RESTRICTION" value="0x0028"/>
+      <Value name="REJECT_RISK_PORT_MESSAGE_RATE_RESTRICTION" value="0x0029"/>
+      <Value name="REJECT_RISK_DUPLICATE_MESSAGE_RATE_RESTRICTION" value="0x002A"/>
     </Enum>
     <Enum name="eOrderRestartReason" type="char_t" dbtype="CHAR(1)">
       <Value name="REFRESH_OF_DISPLAY" value="R"/>

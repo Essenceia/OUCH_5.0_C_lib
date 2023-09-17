@@ -1,3 +1,4 @@
 *.o
 gen_flag
 gen/*.h
+test
