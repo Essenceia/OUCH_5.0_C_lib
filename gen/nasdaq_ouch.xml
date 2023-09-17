@@ -5,20 +5,72 @@
       <Member name="secondary_ord_ref_num" len="8" type="u64_t"/>
       <Member name="firm" len="4" type="char_4_t"/>
       <Member name="min_qty" len="4" type="u32_t"/>
-      <Member name="customer_type" len="1" type="char_t"/>
+      <Member name="customer_type" len="1" type="eCustomerType"/>
       <Member name="max_floor" len="4" type="u32_t"/>
-      <Member name="price_type" len="1" type="char_t"/>
+      <Member name="price_type" len="1" type="ePriceType"/>
       <Member name="peg_offset" len="4" type="price_t"/>
       <Member name="discretion_price" len="8" type="price_t"/>
-      <Member name="discretion_price_type" len="1" type="char_t"/>
+      <Member name="discretion_price_type" len="1" type="eDiscretionPriceType"/>
       <Member name="discretion_peg_offset" len="4" type="price_t"/>
-      <Member name="post_only" len="1" type="char_t"/>
+      <Member name="post_only" len="1" type="ePostOnly"/>
       <Member name="random_reserves" len="4" type="u32_t"/>
       <Member name="route" len="4" type="char_4_t"/>
       <Member name="expire_time" len="4" type="u32_t"/>
+      <Member name="trade_now" len="1" type="eYesNo"/>
+      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="bbo_weight_indicator" len="1" type="eBBOWeightIndicator"/>
+      <Member name="display_quantity" len="4" type="u32_t"/>
+      <Member name="display_price" len="8" type="u64_t"/>
+      <Member name="group_id" len="2" type="u16_t"/>
+      <Member name="shares_located" len="1" type="eYesNo"/>
     </Union>
   </Unions>
   <Enums>
+    <Enum name="eHandleInst" type="char_t" dbtype="CHAR(1)">
+      <Value name="IMBALANCE_ONLY" value="I"/>
+      <Value name="RETAIL_ORDER_TYPE_1" value="O"/>
+      <Value name="RETAIL_ORDER_TYPE_2" value="T"/>
+      <Value name="RETAIL_PRICE_IMPROVEMENT" value="Q"/>
+      <Value name="EXTENDED_LIFE_CONTINUOUS" value="B"/>
+      <Value name="DIRECT_LISTING_CAPITAL_RAISE" value="D"/>
+      <Value name="RETAIL_PRICE_IMPROVEMENT_HIDDEN" value="R"/>
+      <Value name="NO_INSTRUCTIONS" value=" "/>
+    </Enum>
+    <Enum name="eBBOWeightIndicator" type="char_t" dbtype="CHAR(1)">
+      <Value name="ZERO_ZERO_DOT_TWO" value="0"/>
+      <Value name="ZERO_DOT_TWO_ONE" value="1"/>
+      <Value name="ONE_TWO" value="2"/>
+      <Value name="GREATER_THAN_TWO" value="3"/>
+      <Value name="UNSPECIFIED" value=" "/>
+      <Value name="SETS_QBBO" value="S"/>
+      <Value name="IMPROVES_NBBO" value="N"/>
+    </Enum>
+    <Enum name="eYesNo" type="char_t" dbtype="CHAR(1)">
+      <Value name="YES" value="Y"/>
+      <Value name="NO" value="N"/>
+    </Enum>
+    <Enum name="ePostOnly" type="char_t" dbtype="CHAR(1)">
+      <Value name="POST_ONLY" value="P"/>
+      <Value name="POST_NO" value="N"/>
+    </Enum>
+    <Enum name="eCustomerType" type="char_t" dbtype="CHAR(1)">
+      <Value name="RETAIL" value="R"/>
+      <Value name="NOT_RETAIL" value="N"/>
+    </Enum>
+    <Enum name="eDiscretionPriceType" type="char_t" dbtype="CHAR(1)">
+      <Value name="DISCRETION_PRICE_TYPE_LIMIT" value="L"/>
+      <Value name="DISCRETION_PRICE_TYPE_MARKET_PEG" value="P"/>
+      <Value name="DISCRETION_PRICE_TYPE_MIDPOINT_PEG" value="M"/>
+      <Value name="DISCRETION_PRICE_TYPE_PRIMARY_PEG" value="R"/>
+    </Enum>
+    <Enum name="ePriceType" type="char_t" dbtype="CHAR(1)">
+      <Value name="PRICE_TYPE_LIMIT" value="L"/>
+      <Value name="PRICE_TYPE_MARKET_PEG" value="P"/>
+      <Value name="PRICE_TYPE_MIDPOINT_PEG" value="M"/>
+      <Value name="PRICE_TYPE_PRIMARY_PEG" value="R"/>
+      <Value name="PRICE_TYPE_MARKET_MAKER_PEG" value="Q"/>
+      <Value name="PRICE_TYPE_MIDPOINT" value="m"/>
+    </Enum>
     <Enum name="eSide" type="char_t" dbtype="CHAR(1)">
       <Value name="BUY" value="B"/>
       <Value name="SELL" value="S"/>
