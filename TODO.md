@@ -2,9 +2,11 @@
 
 - xml:
     - add default values
+
 - gen:
-    - print union values
-    
+    - add byte to struct msg  
+    - add struct msg to byte
+
 - C lib :
     - print message
     - write message
