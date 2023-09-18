@@ -17,6 +17,9 @@ OUT_STRUCT_ELEM_H = "ouch_out_struct_elem.h"
 ENUM_PRINT_C_F = "ouch_enum_print.c"
 ENUM_PRINT_H_F = "ouch_enum_print.h"
 
+UNION_PRINT_C_F = "ouch_union_print.c"
+UNION_PRINT_H_F = "ouch_union_print.h"
+
 STRUCT_PRINT_C_F = "ouch_struct_print.c"
 STRUCT_PRINT_H_F = "ouch_struct_print.h"
 
@@ -59,11 +62,11 @@ def print_enums(enum, e_n, c_f, h_f):
         c_f.write("\tcase "+n+":\n\t\t")
         c_f.write('printf("'+n+'");\n\t\tbreak;\n')
     c_f.write("\tdefault :\n\t\t")
-    c_f.write('printf("ERROR: Unmatch value");\n\t\tassert(0);\n')
+    c_f.write('printf("ERROR, Unmatch value");\n\t\tassert(0);\n')
     c_f.write('\t}\n\tprintf("\\n");\n}\n')
         
 # Generate unions
-def parse_union(unions, union_f):
+def parse_union(unions, union_f, pc_f, ph_f):
     for union in unions:
         u_name = union['@name']
         union_f.write("typedef union {\n")
@@ -73,23 +76,28 @@ def parse_union(unions, union_f):
             t = u_m[i]['@type']
             union_f.write('\t'+t+" "+n+";\n")
         union_f.write("} "+u_name+";\n\n")
+        print_union(u_m, u_name, pc_f, ph_f)
 
-def print_union():
+def print_union(union, u_n, c_f, h_f):
     # setup print function prototype, needs lenght,
     # option tag and union
     p = "void print_"+u_n+"(const u8_t l, const char_t t, const "+u_n+" u)"
     h_f.write(p+";\n")
     c_f.write(p+"\n{")
-    c_f.write('\tprintf("'+u_n+' : ");\n')
-    c_f.write("\tswitch(e)\n\t{\n")
-    for val in enum: 
-        n = val['@name']
-        v = val['@value']
-        c_f.write("\tcase "+n+":\n\t\t")
-        c_f.write('printf("'+n+'");\n\t\tbreak;\n')
-    c_f.write("\tdefault :\n\t\t")
-    c_f.write('printf("ERROR: Unmatch value");\n\t\tassert(0);\n')
-    c_f.write('\t}\n\tprintf("\\n");\n}\n')
+    c_f.write('\n\tprintf("'+u_n+' : ");\n')
+    # check if length is > 0 ( we have option )
+    c_f.write('\tif(l==0){\n\t\tprint("none\\n");\n\t}else{\n')
+    # switch on tag
+    c_f.write("\t\tswitch(t)\n\t\t{\n")
+    for m in union: 
+        n = m['@name']
+        tag = m['@tag']
+        t = m['@type']
+        c_f.write("\t\tcase "+tag+":\n\t\t\t")
+        c_f.write('printf_'+t+'("u.'+n+'");\n\t\t\tbreak;\n')
+    c_f.write("\t\tdefault :\n\t\t\t")
+    c_f.write('printf("ERROR, Unknown tag %u",t);\n\t\t\tassert(0);\n')
+    c_f.write('\t\t}\n\t}\n\tprintf("\\n");\n}\n')
  
 # Generate structures
 def parse_struct(structs, struct_f, in_elem_f, out_elem_f, pc_f, ph_f):
@@ -98,7 +106,6 @@ def parse_struct(structs, struct_f, in_elem_f, out_elem_f, pc_f, ph_f):
         s_f = s['Field']
         # check type, exclude dictionary
         if isinstance(s_f, list):
-            print(s_name)
             struct_f.write("typedef struct{\n")
             # start at 1 to bypass message type
             for i in range(1,len(s_f)):
@@ -157,6 +164,9 @@ def main():
     enum_c_f = open(ENUM_PRINT_C_F,"w")
     enum_h_f = open(ENUM_PRINT_H_F,"w")
 
+    union_c_f = open(UNION_PRINT_C_F,"w")
+    union_h_f = open(UNION_PRINT_H_F,"w")
+
     struct_c_f = open(STRUCT_PRINT_C_F,"w")
     struct_h_f = open(STRUCT_PRINT_H_F,"w")
 
@@ -169,7 +179,7 @@ def main():
    
     # Generate enums 
     parse_enum(content['Model']['Enums']['Enum'], enum_f, enum_c_f, enum_h_f)
-    parse_union(content['Model']['Unions']['Union'], union_f)
+    parse_union(content['Model']['Unions']['Union'], union_f, union_c_f, union_h_f)
     parse_struct(content['Model']['Structs']['Struct'], struct_f, in_elem_f, out_elem_f, struct_c_f, struct_h_f)
     print("C code generated")
 

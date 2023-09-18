@@ -16,7 +16,7 @@
       <Member name="route" tag="14" len="4" type="char_4_t"/>
       <Member name="expire_time" tag="15" len="4" type="u32_t"/>
       <Member name="trade_now" tag="16" len="1" type="eYesNo"/>
-      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="handle_inst" tag="17" len="1" type="eHandleInst"/>
       <Member name="group_id" tag="24" len="2" type="u16_t"/>
       <Member name="shares_located" tag="25" len="1" type="eYesNo"/>
     </Union>
@@ -32,7 +32,7 @@
       <Member name="random_reserves" tag="13" len="4" type="u32_t"/>
       <Member name="expire_time" tag="15" len="4" type="u32_t"/>
       <Member name="trade_now" tag="16" len="1" type="eYesNo"/>
-      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="handle_inst" tag="17" len="1" type="eHandleInst"/>
       <Member name="group_id" tag="24" len="2" type="u16_t"/>
       <Member name="shares_located" tag="25" len="1" type="eYesNo"/>
     </Union>
@@ -51,7 +51,7 @@
       <Member name="route" tag="14" len="4" type="char_4_t"/>
       <Member name="expire_time" tag="15" len="4" type="u32_t"/>
       <Member name="trade_now" tag="16" len="1" type="eYesNo"/>
-      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="handle_inst" tag="17" len="1" type="eHandleInst"/>
       <Member name="bbo_weight_indicator" tag="18" len="1" type="eBBOWeightIndicator"/>
       <Member name="display_quantity" tag="22" len="4" type="u32_t"/>
       <Member name="display_price" tag="23" len="8" type="u64_t"/>
@@ -66,7 +66,7 @@
       <Member name="post_only" tag="12" len="1" type="ePostOnly"/>
       <Member name="expire_time" tag="15" len="4" type="u32_t"/>
       <Member name="trade_now" tag="16" len="1" type="eYesNo"/>
-      <Member name="handle_inst" len="1" type="eHandleInst"/>
+      <Member name="handle_inst" tag="17" len="1" type="eHandleInst"/>
       <Member name="bbo_weight_indicator" tag="18" len="1" type="eBBOWeightIndicator"/>
     </Union>
     <Union name="uOrderRestartedOption">
