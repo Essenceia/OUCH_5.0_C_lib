@@ -15,11 +15,18 @@ typedef struct{
 	#include "gen/ouch_in_struct_elem.h"
 }ouch_in_s;
 
+/* read/write functions */
+#include "gen/ouch_struct_in_read.h"
+
 /* define ouch outbound structs */
 typedef struct{
 	char_t message_type;
 	#include "gen/ouch_out_struct_elem.h"
 }ouch_out_s;
+
+
+/* read/write functions */
+#include "gen/ouch_struct_out_read.h"
 
 
 #endif // OUCH_S_H

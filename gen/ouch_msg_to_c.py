@@ -22,6 +22,13 @@ UNION_PRINT_H_F = "ouch_union_print.h"
 
 STRUCT_PRINT_C_F = "ouch_struct_print.c"
 STRUCT_PRINT_H_F = "ouch_struct_print.h"
+    
+# Read functions
+STRUCT_IN_READ_H_F = "ouch_struct_in_read.h"
+STRUCT_IN_READ_C_F = "ouch_struct_in_read.c"
+STRUCT_OUT_READ_H_F = "ouch_struct_out_read.h"
+STRUCT_OUT_READ_C_F = "ouch_struct_out_read.c"
+
 
 
 SIG_PREFIX = "ouch_"
@@ -123,6 +130,7 @@ def parse_struct(structs, struct_f, in_elem_f, out_elem_f, pc_f, ph_f):
             elem_f.write("\t"+s_name+"_s "+s_name+";\n")
             print_struct(s_f, s_name,pc_f,ph_f)
 
+
 # Print struct
 def print_struct(struct, name, c_f, h_f):
     #setup print function prototype
@@ -141,6 +149,50 @@ def print_struct(struct, name, c_f, h_f):
             print_struct_option(t,n, struct[i-2], struct[i-1], c_f)
     c_f.write('\tprintf("}\\n");\n}\n')
 
+# Read byte buffer into struct
+def read_struct(structs,inbound, rc_f, rh_f):
+    x = "ouch_"
+    if (inbound == "true"):
+        x += "in"
+    else:
+        x += "out"
+    x += "_s"
+
+    # function prototype
+    p = x+"* read_"+x+"(uint8_t* buff, size_t len)"
+    rh_f.write(p+";")
+    rc_f.write(p+"\n{\n")
+    # assert buff is not null
+    rc_f.write("\tassert(buff);\n")
+    # check buffer length and read first byte
+    rc_f.write("\tif(len==0){\n\t\treturn NULL;\n\t}else{\n")
+    # alloc struct
+    rc_f.write("\t\t"+x+"*s = malloc(sizeof("+x+"));\n")
+    # get message type char
+    rc_f.write("\t\ts->message_type = buff[0];\n")
+    # begin switch
+    rc_f.write("\t\tswitch(s->message_type){\n")
+    for s in structs:
+        s_name = s['@name']
+        s_f = s['Field']
+        inbnd = s['@inbound']
+        s_id = s['@id']
+        if( inbnd == inbound ):
+           rc_f.write("\t\t\tcase '"+s_id+"':\n") 
+           # check type, exclude dictionary
+           if isinstance(s_f, list):
+               rc_f.write("\t\t\t\tmemcpy(&(s->"+s_name+"),buff+1,sizeof(s->"+s_name+"));\n") 
+           rc_f.write("\t\t\t\tbreak;\n")
+    # add default
+    rc_f.write("\t\t\tdefault:\n\t\t\t\t")
+    rc_f.write('printf("ERROR: Unknown message type %c\\n",s->message_type);\n')
+    rc_f.write("\t\t\t\tassert(0);\n")
+    rc_f.write("\t\t\t\tbreak;\n")
+    # end switch
+    rc_f.write("\t\t\t}\n")
+    rc_f.write("\t\treturn s;\n")
+    rc_f.write("\t}\n}\n")
+ 
 # Print option in struct: needs option lenght and option tag 
 def print_struct_option(u_t, u_n, l, t, c_f):
     l_n = l['@name']
@@ -182,6 +234,17 @@ def main():
     parse_enum(content['Model']['Enums']['Enum'], enum_f, enum_c_f, enum_h_f)
     parse_union(content['Model']['Unions']['Union'], union_f, union_c_f, union_h_f)
     parse_struct(content['Model']['Structs']['Struct'], struct_f, in_elem_f, out_elem_f, struct_c_f, struct_h_f)
+    
+    # read and write functions
+    in_read_h_f = open(STRUCT_IN_READ_H_F,"w")
+    in_read_c_f = open(STRUCT_IN_READ_C_F,"w")
+    read_struct(content['Model']['Structs']['Struct'],"true",in_read_c_f, in_read_h_f)
+ 
+    out_read_h_f = open(STRUCT_OUT_READ_H_F,"w")
+    out_read_c_f = open(STRUCT_OUT_READ_C_F,"w")
+    read_struct(content['Model']['Structs']['Struct'],"false",out_read_c_f, out_read_h_f)
+     
+    
     print("C code generated")
 
 main()
