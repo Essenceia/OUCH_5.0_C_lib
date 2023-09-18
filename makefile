@@ -9,21 +9,21 @@ FLAGS = -std=gnu99 -Wall -Wextra -Wconversion -Wshadow -Wundef -fno-common  -Wno
 CC = cc $(if $(debug),-DDEBUG -g)
 LD = cc
 
-test : test.o
+test : test.o type.o ouch_s.o
 	$(LD) -o test -g test.o
 
 test.o : test.c
 	$(CC) -c test.c $(FLAGS)
 
-file.o: gen_flag file.h file.c
-	$(CC) -c file.c $(FLAGS)
+type.o : type.c type.h
+	$(CC) -c type.c $(FLAGS)
 
 gen_flag : ${DOC_DIR}/${XML} ${GEN_DIR}/${SCRIPT}
 	cd ${GEN_DIR} ; python ${SCRIPT} ../$(DOC_DIR)/${XML}
 	touch gen_flag
 
-ouch.o: type.h itch.h itch.c itch_s.h gen_flag 
-	$(CC) -c itch.c $(FLAGS) 
+ouch_s.o: ouch_s.h ouch_s.c
+	$(CC) -c ouch_s.c $(FLAGS)
 
 lib: itch.o file.o
 	ar rcs libitch.a itch.o file.o 

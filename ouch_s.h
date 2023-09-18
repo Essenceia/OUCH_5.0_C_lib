@@ -2,6 +2,7 @@
 #define OUCH_S_H
 
 #include "type.h"
+#include <stdio.h>
 
 /* define ouch structs */
 #include "gen/ouch_struct.h"

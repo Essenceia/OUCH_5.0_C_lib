@@ -17,6 +17,10 @@ OUT_STRUCT_ELEM_H = "ouch_out_struct_elem.h"
 ENUM_PRINT_C_F = "ouch_enum_print.c"
 ENUM_PRINT_H_F = "ouch_enum_print.h"
 
+STRUCT_PRINT_C_F = "ouch_struct_print.c"
+STRUCT_PRINT_H_F = "ouch_struct_print.h"
+
+
 SIG_PREFIX = "ouch_"
 
 # Generators 
@@ -72,7 +76,7 @@ def parse_union(unions, union_f):
 
 
 # Generate structures
-def parse_struct(structs, struct_f, in_elem_f, out_elem_f):
+def parse_struct(structs, struct_f, in_elem_f, out_elem_f, pc_f, ph_f):
     for s in structs:
         s_name = s['@name']
         s_f = s['Field']
@@ -94,10 +98,22 @@ def parse_struct(structs, struct_f, in_elem_f, out_elem_f):
                 case "false":
                     elem_f = out_elem_f;
             elem_f.write("\t"+s_name+"_s "+s_name+";\n")
+            print_struct(s_f, s_name,pc_f,ph_f)
 
-# Print
-# Print unions
- 
+# Print struct
+def print_struct(struct, name, c_f, h_f):
+    #setup print function prototype
+    p = "void print_"+name+"(const "+name+"_s* e)"
+    h_f.write(p+";\n")
+    c_f.write(p+"\n{")
+    c_f.write('\tprintf("'+name+' {\\n");\n')
+    for i in range(1,len(struct)):
+        val = struct[i]
+        n = val['@name']
+        t = val['@type']
+        c_f.write("\tprint_"+t+'(e->'+n+");\n")
+    c_f.write('\tprintf("}\\n");\n}\n')
+
 def main():
     # Parse args, give path to xml
     assert(len(sys.argv) == 2);
@@ -116,6 +132,10 @@ def main():
     enum_c_f = open(ENUM_PRINT_C_F,"w")
     enum_h_f = open(ENUM_PRINT_H_F,"w")
 
+    struct_c_f = open(STRUCT_PRINT_C_F,"w")
+    struct_h_f = open(STRUCT_PRINT_H_F,"w")
+
+
     in_elem_f = open(IN_STRUCT_ELEM_H,"w")
     out_elem_f = open(OUT_STRUCT_ELEM_H,"w")
      
@@ -125,7 +145,7 @@ def main():
     # Generate enums 
     parse_enum(content['Model']['Enums']['Enum'], enum_f, enum_c_f, enum_h_f)
     parse_union(content['Model']['Unions']['Union'], union_f)
-    parse_struct(content['Model']['Structs']['Struct'], struct_f, in_elem_f, out_elem_f)
+    parse_struct(content['Model']['Structs']['Struct'], struct_f, in_elem_f, out_elem_f, struct_c_f, struct_h_f)
     print("C code generated")
 
 main()
