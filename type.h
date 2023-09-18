@@ -20,5 +20,10 @@ typedef char char_14_t[14] ;
 
 typedef uint64_t timestamp_t;
 
+/* define enums */
 #include "gen/ouch_enum.h"
+
+/* define unions */
+#include "gen/ouch_union.h"
+
 #endif // TYPE_H

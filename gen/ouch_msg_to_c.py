@@ -8,6 +8,7 @@ import re
 # output files
 ENUM_H="ouch_enum.h"
 STRUCT_H="ouch_struct.h"
+UNION_H="ouch_union.h"
 
 SIG_PREFIX = "ouch_"
 
@@ -30,20 +31,30 @@ def parse_enum(enums, enum_f):
                 enum_f.write(v)
         enum_f.write("\n} "+e_name+";\n\n")
 
+# Generate unions
+def parse_union(unions, union_f):
+    for union in unions:
+        u_name = union['@name']
+        union_f.write("typedef union {\n")
+        u_m = union['Member']
+        for i in range(len(u_m)):
+            n = u_m[i]['@name']
+            t = u_m[i]['@type']
+            union_f.write('\t'+t+" "+n+";\n")
+        union_f.write("} "+u_name+";\n\n")
+
+
 # Generate structures
 def parse_struct(structs, struct_f):
     for s in structs:
         s_name = s['@name']
         s_f = s['Field']
-        print("\n\n\n")
-        print(s_name," ",len(s_f)," ", type(s_f))
         # check type, exclude dictionary
         if isinstance(s_f, list):
             struct_f.write("typedef struct{\n")
             # start at 1 to bypass message type
             for i in range(1,len(s_f)):
                 n = s_f[i]['@name']
-                print(n)
                 t = s_f[i]['@type']
                 struct_f.write("\t"+t+" "+n+";\n")
             struct_f.write("} __attribute__((__packed__)) "+s_name+";\n\n")
@@ -61,12 +72,14 @@ def main():
     # Open or create output files
     enum_f = open(ENUM_H,"w")
     struct_f = open(STRUCT_H,"w")
-   
+    union_f = open(UNION_H,"w")
+ 
     # Parse XML
     content = xmltodict.parse(my_xml)
    
     # Generate enums 
     parse_enum(content['Model']['Enums']['Enum'], enum_f)
+    parse_union(content['Model']['Unions']['Union'], union_f)
     parse_struct(content['Model']['Structs']['Struct'], struct_f)
     print("C code generated")
 

@@ -383,7 +383,7 @@
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
-      <Field name="quantity" offset="13" len="4" type="numeric_t"/>
+      <Field name="quantity" offset="13" len="4" type="u32_t"/>
       <Field name="price" offset="17" len="8" type="price_t"/>
       <Field name="liquidity_flag" offset="25" len="1" type="eLiquidityFlags"/>
       <Field name="match_number" offset="26" len="8" type="u64_t"/>
