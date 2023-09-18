@@ -2,8 +2,9 @@
 
 - xml:
     - add default values
-
-- generate python script to parse xml and translate to C
+- gen:
+    - print union values
+    
 - C lib :
     - print message
     - write message
