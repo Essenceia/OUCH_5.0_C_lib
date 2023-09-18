@@ -86,7 +86,7 @@ def print_union(union, u_n, c_f, h_f):
     c_f.write(p+"\n{")
     c_f.write('\n\tprintf("'+u_n+' : ");\n')
     # check if length is > 0 ( we have option )
-    c_f.write('\tif(l==0){\n\t\tprint("none\\n");\n\t}else{\n')
+    c_f.write('\tif(l==0){\n\t\tprintf("none\\n");\n\t}else{\n')
     # switch on tag
     c_f.write("\t\tswitch(t)\n\t\t{\n")
     for m in union: 
@@ -94,7 +94,7 @@ def print_union(union, u_n, c_f, h_f):
         tag = m['@tag']
         t = m['@type']
         c_f.write("\t\tcase "+tag+":\n\t\t\t")
-        c_f.write('printf_'+t+'("u.'+n+'");\n\t\t\tbreak;\n')
+        c_f.write('print_'+t+'(u.'+n+');\n\t\t\tbreak;\n')
     c_f.write("\t\tdefault :\n\t\t\t")
     c_f.write('printf("ERROR, Unknown tag %u",t);\n\t\t\tassert(0);\n')
     c_f.write('\t\t}\n\t}\n\tprintf("\\n");\n}\n')
@@ -129,12 +129,13 @@ def print_struct(struct, name, c_f, h_f):
     p = "void print_"+name+"(const "+name+"_s* e)"
     h_f.write(p+";\n")
     c_f.write(p+"\n{")
-    c_f.write('\tprintf("'+name+' {\\n");\n')
+    c_f.write('\tprintf("'+name+' {\\n\\n");\n')
     for i in range(1,len(struct)):
         val = struct[i]
         n = val['@name']
         t = val['@type']
         if not(n=="optional_appendage"):
+            c_f.write('\tprintf("'+n+' : ");\n')
             c_f.write("\tprint_"+t+'(e->'+n+");\n")
         else:
             print_struct_option(t,n, struct[i-2], struct[i-1], c_f)

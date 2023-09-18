@@ -59,5 +59,9 @@ static inline void print_timestamp_t(const timestamp_t b){ printf("%luns\n",be64
 /* define unions */
 #include "gen/ouch_union.h"
 
+/* print unions */
+#include "gen/ouch_union_print.h"
+
+
 
 #endif // TYPE_H

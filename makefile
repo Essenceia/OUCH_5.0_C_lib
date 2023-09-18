@@ -10,19 +10,19 @@ CC = cc $(if $(debug),-DDEBUG -g)
 LD = cc
 
 test : test.o type.o ouch_s.o
-	$(LD) -o test -g test.o
+	$(LD) -o test -g $^
 
 test.o : test.c
 	$(CC) -c test.c $(FLAGS)
-
-type.o : type.c type.h
-	$(CC) -c type.c $(FLAGS)
 
 gen_flag : ${DOC_DIR}/${XML} ${GEN_DIR}/${SCRIPT}
 	cd ${GEN_DIR} ; python ${SCRIPT} ../$(DOC_DIR)/${XML}
 	touch gen_flag
 
-ouch_s.o: ouch_s.h ouch_s.c
+type.o : gen_flag type.c type.h
+	$(CC) -c type.c $(FLAGS)
+
+ouch_s.o: gen_flag ouch_s.h ouch_s.c
 	$(CC) -c ouch_s.c $(FLAGS)
 
 lib: itch.o file.o

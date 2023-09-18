@@ -362,7 +362,7 @@
       <Field name="order_state" offset="51" len="1" type="eOrderState"/>
       <Field name="CIOrdID" offset="52" len="14" type="char_14_t"/>
       <Field name="appendage_length" offset="66" len="1" type="u8_t"/>
-      <Field name="appendage_tag" offset="67" len="1" type="c8_t"/>
+      <Field name="appendage_tag" offset="67" len="1" type="u8_t"/>
       <Field name="optional_appendage" offset="68" len="var" type="uOrderReplacedOption"/>
     </Struct>
     <Struct name="order_canceled" len="18" id="C" database="true" inbound="false">
