@@ -74,7 +74,23 @@ def parse_union(unions, union_f):
             union_f.write('\t'+t+" "+n+";\n")
         union_f.write("} "+u_name+";\n\n")
 
-
+def print_union():
+    # setup print function prototype, needs lenght,
+    # option tag and union
+    p = "void print_"+u_n+"(const u8_t l, const char_t t, const "+u_n+" u)"
+    h_f.write(p+";\n")
+    c_f.write(p+"\n{")
+    c_f.write('\tprintf("'+u_n+' : ");\n')
+    c_f.write("\tswitch(e)\n\t{\n")
+    for val in enum: 
+        n = val['@name']
+        v = val['@value']
+        c_f.write("\tcase "+n+":\n\t\t")
+        c_f.write('printf("'+n+'");\n\t\tbreak;\n')
+    c_f.write("\tdefault :\n\t\t")
+    c_f.write('printf("ERROR: Unmatch value");\n\t\tassert(0);\n')
+    c_f.write('\t}\n\tprintf("\\n");\n}\n')
+ 
 # Generate structures
 def parse_struct(structs, struct_f, in_elem_f, out_elem_f, pc_f, ph_f):
     for s in structs:
@@ -111,8 +127,17 @@ def print_struct(struct, name, c_f, h_f):
         val = struct[i]
         n = val['@name']
         t = val['@type']
-        c_f.write("\tprint_"+t+'(e->'+n+");\n")
+        if not(n=="optional_appendage"):
+            c_f.write("\tprint_"+t+'(e->'+n+");\n")
+        else:
+            print_struct_option(t,n, struct[i-2], struct[i-1], c_f)
     c_f.write('\tprintf("}\\n");\n}\n')
+
+# Print option in struct: needs option lenght and option tag 
+def print_struct_option(u_t, u_n, l, t, c_f):
+    l_n = l['@name']
+    t_n = t['@name']
+    c_f.write("\tprint_"+u_t+'(e->'+l_n+', e->'+t_n+',e->'+u_n+");\n")
 
 def main():
     # Parse args, give path to xml
