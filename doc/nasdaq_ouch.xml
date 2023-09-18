@@ -409,7 +409,7 @@
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
     </Struct>
-    <Struct name="cancel_reject_message" len="13" id="I" database="true">
+    <Struct name="cancel_reject_message" len="13" id="I" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
