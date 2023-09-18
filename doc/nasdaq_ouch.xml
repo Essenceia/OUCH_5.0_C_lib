@@ -309,7 +309,7 @@
       <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
       <Field name="quantity" offset="5" len="4" type="u32_t"/>
     </Struct>
-    <Struct name="modify_order_request" len="10" id="M" database="true">
+    <Struct name="modify_order_request" len="10" id="M" database="true" inbound="true">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
       <Field name="side" offset="5" len="1" type="eSide"/>

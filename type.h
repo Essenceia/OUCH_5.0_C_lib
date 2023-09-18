@@ -18,5 +18,7 @@ typedef char char_4_t[4];
 typedef char char_8_t[8]; 
 typedef char char_14_t[14] ;
 
+typedef uint64_t timestamp_t;
+
 #include "gen/ouch_enum.h"
 #endif // TYPE_H

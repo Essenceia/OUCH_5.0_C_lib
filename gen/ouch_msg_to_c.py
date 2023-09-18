@@ -7,9 +7,11 @@ import re
 
 # output files
 ENUM_H="ouch_enum.h"
+STRUCT_H="ouch_struct.h"
 
 SIG_PREFIX = "ouch_"
 
+# Generate enums
 def parse_enum(enums, enum_f):
     for enum in enums:
         e_name = enum['@name']
@@ -28,6 +30,24 @@ def parse_enum(enums, enum_f):
                 enum_f.write(v)
         enum_f.write("\n} "+e_name+";\n\n")
 
+# Generate structures
+def parse_struct(structs, struct_f):
+    for s in structs:
+        s_name = s['@name']
+        s_f = s['Field']
+        print("\n\n\n")
+        print(s_name," ",len(s_f)," ", type(s_f))
+        # check type, exclude dictionary
+        if isinstance(s_f, list):
+            struct_f.write("typedef struct{\n")
+            # start at 1 to bypass message type
+            for i in range(1,len(s_f)):
+                n = s_f[i]['@name']
+                print(n)
+                t = s_f[i]['@type']
+                struct_f.write("\t"+t+" "+n+";\n")
+            struct_f.write("} __attribute__((__packed__)) "+s_name+";\n\n")
+
 def main():
     # Parse args, give path to xml
     assert(len(sys.argv) == 2);
@@ -40,12 +60,14 @@ def main():
     
     # Open or create output files
     enum_f = open(ENUM_H,"w")
+    struct_f = open(STRUCT_H,"w")
    
     # Parse XML
     content = xmltodict.parse(my_xml)
    
     # Generate enums 
     parse_enum(content['Model']['Enums']['Enum'], enum_f)
+    parse_struct(content['Model']['Structs']['Struct'], struct_f)
     print("C code generated")
 
 main()
