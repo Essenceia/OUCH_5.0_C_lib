@@ -1,0 +1,4 @@
+	entry_order_request_s entry_order_request;
+	replace_order_request_s replace_order_request;
+	cancel_order_request_s cancel_order_request;
+	modify_order_request_s modify_order_request;

@@ -10,6 +10,31 @@ The python script and generated content can be found in the `gen` directory.
 `xml` format file can found in the `doc` directory.
 
 
+## Build library 
+
+To build the static library `libouch.a` : 
+
+```
+make lib
+```
+
+## Build release
+
+To build a release and have it packaged in the `release` directory :
+
+```
+make release
+```
+
+
+## Build test
+
+To test the build:
+
+```
+make test
+```
+
 ## Sources
   
 Reference OUCH 5.0 specification : http://nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf

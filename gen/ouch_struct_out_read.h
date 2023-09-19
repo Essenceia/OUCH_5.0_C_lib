@@ -1,0 +1,1 @@
+ouch_out_s* read_ouch_out_s(uint8_t* buff, size_t len);

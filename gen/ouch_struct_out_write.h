@@ -1,0 +1,1 @@
+uint8_t* write_ouch_out(ouch_out_s* s, size_t *len);

@@ -12,7 +12,7 @@ LD = cc
 test : test.o type.o ouch_s.o
 	$(LD) -o test -g $^
 
-test.o : test.c
+test.o : gen_flag test.c
 	$(CC) -c test.c $(FLAGS)
 
 gen_flag : ${DOC_DIR}/${XML} ${GEN_DIR}/${SCRIPT}
@@ -25,19 +25,20 @@ type.o : gen_flag type.c type.h
 ouch_s.o: gen_flag ouch_s.h ouch_s.c
 	$(CC) -c ouch_s.c $(FLAGS)
 
-lib: itch.o file.o
-	ar rcs libitch.a itch.o file.o 
+lib: ouch_s.o type.o
+	ar rcs libouch.a ouch_s.o type.o 
 
 release: lib
 	mkdir -p $(RELEASE)/$(INC)/$(GEN_DIR)
-	cp libitch.a $(RELEASE)/.
+	cp libouch.a $(RELEASE)/.
 	cp *.h $(RELEASE)/$(INC)
 	cp $(GEN_DIR)/*.h $(RELEASE)/$(INC)/$(GEN_DIR)
 
 clean:
-	rm gen_flag
-	rm -f ${GEN_DIR}/*.h
-	rm -f *.o	
-	rm -f *.a	
-	rm -f test
-	rm -fr $(RELEASE)
+	-rm gen_flag
+	-rm -f ${GEN_DIR}/*.h
+	-rm -f ${GEN_DIR}/*.c
+	-rm -f *.o	
+	-rm -f *.a	
+	-rm -f test
+	-rm -fr $(RELEASE)

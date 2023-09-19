@@ -1,5 +1,5 @@
 *.o
+*.a
 gen_flag
-gen/*.h
-gen/*.c
 test
+release
