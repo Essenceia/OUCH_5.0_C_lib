@@ -29,6 +29,11 @@ STRUCT_IN_READ_C_F = "ouch_struct_in_read.c"
 STRUCT_OUT_READ_H_F = "ouch_struct_out_read.h"
 STRUCT_OUT_READ_C_F = "ouch_struct_out_read.c"
 
+# Write function
+STRUCT_IN_WRITE_H_F = "ouch_struct_in_write.h"
+STRUCT_IN_WRITE_C_F = "ouch_struct_in_write.c"
+STRUCT_OUT_WRITE_H_F = "ouch_struct_out_write.h"
+STRUCT_OUT_WRITE_C_F = "ouch_struct_out_write.c"
 
 
 SIG_PREFIX = "ouch_"
@@ -192,7 +197,58 @@ def read_struct(structs,inbound, rc_f, rh_f):
     rc_f.write("\t\t\t}\n")
     rc_f.write("\t\treturn s;\n")
     rc_f.write("\t}\n}\n")
- 
+
+# Write byte buffer into struct
+def write_struct(structs,inbound, wc_f, wh_f):
+    x = "ouch_"
+    if (inbound == "true"):
+        x += "in"
+    else:
+        x += "out"
+
+    # function prototype
+    p = "uint8_t* write_"+x+"("+x +"_s* s, size_t *len)"
+    wh_f.write(p+";")
+    wc_f.write(p+"\n{\n")
+    # assert buff is not null
+    wc_f.write("\tassert(s);\n")
+    # alloc struct
+    wc_f.write("\t*len = 0;\n")
+    wc_f.write("\tuint8_t *buff = NULL;\n")
+    # begin switch
+    wc_f.write("\tswitch(s->message_type){\n")
+    for s in structs:
+        s_name = s['@name']
+        s_f = s['Field']
+        inbnd = s['@inbound']
+        s_id = s['@id']
+        # get base length ( without option )
+        s_len = s['@len']
+        if( inbnd == inbound ):
+           wc_f.write("\t\tcase '"+s_id+"':\n") 
+           wc_f.write("\t\t\t*len = "+s_len+";\n") 
+           # check type, exclude dictionary
+           if isinstance(s_f, list):
+                # get option length if there is any
+                for field in s['Field']:
+                    if ( field['@name'] == "appendage_length"):
+                        wc_f.write("\t\t\t*len += s->"+s_name+".appendage_length;\n") 
+                wc_f.write("\t\t\tbuff = malloc(sizeof(uint8_t)*(*len));\n") 
+                wc_f.write("\t\t\tmemcpy(buff, &(s->"+s_name+"),sizeof(uint8_t)*(*len));\n") 
+           else:
+                wc_f.write("\t\t\tbuff = malloc(sizeof(uint8_t)*1);\n") 
+                wc_f.write("\t\t\tbuff[0] = s->message_type;;\n") 
+           wc_f.write("\t\t\tbreak;\n")
+    # add default
+    wc_f.write("\t\tdefault:\n\t\t\t")
+    wc_f.write('printf("ERROR: Unknown message type %c\\n",s->message_type);\n')
+    wc_f.write("\t\t\tassert(0);\n")
+    wc_f.write("\t\t\tbreak;\n")
+    # end switch
+    wc_f.write("\t\t}\n")
+    wc_f.write("\treturn buff;\n")
+    wc_f.write("}\n")
+  
 # Print option in struct: needs option lenght and option tag 
 def print_struct_option(u_t, u_n, l, t, c_f):
     l_n = l['@name']
@@ -243,7 +299,14 @@ def main():
     out_read_h_f = open(STRUCT_OUT_READ_H_F,"w")
     out_read_c_f = open(STRUCT_OUT_READ_C_F,"w")
     read_struct(content['Model']['Structs']['Struct'],"false",out_read_c_f, out_read_h_f)
-     
+    
+    
+    in_write_h_f = open(STRUCT_IN_WRITE_H_F,"w")
+    in_write_c_f = open(STRUCT_IN_WRITE_C_F,"w")
+    write_struct(content['Model']['Structs']['Struct'],"true",in_write_c_f, in_write_h_f)
+    out_write_h_f = open(STRUCT_OUT_WRITE_H_F,"w")
+    out_write_c_f = open(STRUCT_OUT_WRITE_C_F,"w")
+    write_struct(content['Model']['Structs']['Struct'],"false",out_write_c_f, out_write_h_f)
     
     print("C code generated")
 

@@ -275,7 +275,7 @@
     </Enum>
   </Enums>
   <Structs>
-    <Struct name="entry_order_request" len="12" id="O" database="true" inbound="true">
+    <Struct name="entry_order_request" len="47" id="O" database="true" inbound="true">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="user_ref_num" offset="1" len="4" type="u32_t"/>
       <Field name="side" offset="5" len="1" type="eSide"/>
@@ -292,7 +292,7 @@
       <Field name="appendage_tag" offset="46" len="1" type="u8_t"/>
       <Field name="optional_appendage" offset="47" len="8" type="uEntryOrderOption"/>
     </Struct>
-    <Struct name="replace_order_request" len="42" id="U" database="true" inbound="true">
+    <Struct name="replace_order_request" len="40" id="U" database="true" inbound="true">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="orig_user_ref_num" offset="1" len="4" type="u32_t"/>
       <Field name="user_ref_num" offset="5" len="4" type="u32_t"/>
@@ -325,7 +325,7 @@
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="event_code" offset="9" len="1" type="eEventCode"/>
     </Struct>
-    <Struct name="order_accepted" len="76" id="A" database="true" inbound="false">
+    <Struct name="order_accepted" len="64" id="A" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>
@@ -433,7 +433,7 @@
       <Field name="side" offset="13" len="1" type="eSide"/>
       <Field name="quantity" offset="14" len="4" type="u32_t"/>
     </Struct>
-    <Struct name="order_restated_message" len="18" id="R" database="true" inbound="false">
+    <Struct name="order_restated_message" len="16" id="R" database="true" inbound="false">
       <Field name="message_type" offset="0" len="1" type="char_t"/>
       <Field name="timestamp" offset="1" len="8" type="timestamp_t"/>
       <Field name="user_ref_num" offset="9" len="4" type="u32_t"/>

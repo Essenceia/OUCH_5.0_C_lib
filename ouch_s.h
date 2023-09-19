@@ -17,6 +17,7 @@ typedef struct{
 
 /* read/write functions */
 #include "gen/ouch_struct_in_read.h"
+#include "gen/ouch_struct_in_write.h"
 
 /* define ouch outbound structs */
 typedef struct{
@@ -27,6 +28,7 @@ typedef struct{
 
 /* read/write functions */
 #include "gen/ouch_struct_out_read.h"
+#include "gen/ouch_struct_out_write.h"
 
 
 #endif // OUCH_S_H
