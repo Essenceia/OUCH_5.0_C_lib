@@ -41,5 +41,5 @@ Reference OUCH 5.0 specification : http://nasdaqtrader.com/content/technicalsupp
 
 ## License
 
-This code is licensed under CC BY-NC 4.0, all rights belong to Julia Desmazes.
+This code is licensed under CC BY-NC 4.0 with the exception of the `gen/nasdaq_ouch.xml` which is under MIT license, all rights belong to Julia Desmazes.
 
