@@ -1,0 +1,1445 @@
+                                                                                                                                                      North American Trading Services
+
+
+
+
+OUCH 5.0
+Order Entry Specification
+Updated April, 2023
+
+Table Of Contents
+1. Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+      1.1.     Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+      1.2.     Data Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+      1.3.     Fault Redundancy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+2. Inbound Messages. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+      2.1.     Type O – Enter Order . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+      2.2.     Type U – Replace Order Request . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+      2.3.     Type X – Cancel Order Request . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+      2.4.     Type M – Modify Order Request. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+      2.5.     Type C - Mass Cancel Request . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+      2.6.     Type D – Disable Order Entry Request. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+      2.7.     Type E – Enable Order Entry Request . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+      2.8.     Type Q – Account Query Request . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+3. Outbound Messages . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .11
+      3.1.     Type S – System Event . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+      3.2.     Type A – Order Accepted . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+      3.3.     Type U – Order Replaced . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+      3.4.     Type C – Order Canceled . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+      3.5.     Type D – AIQ Canceled . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+      3.6.     Type E – Order Executed . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+      3.7.     Type B – Broken Trade. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+      3.8.     Type J – Rejected . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+      3.9.     Type P – Cancel Pending. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+      3.10. Type I – Cancel Reject . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+      3.11.    Type T – Order Priority Update. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+      3.12. Type M – Order Modified. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+      3.13. Type R – Order Restated . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+
+
+
+
+nasdaq.com                                                                                                                                                                                                    1
+      3.14. Type X - Mass Cancel Response . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+      3.15. Type G - Disable Order Entry Response . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+      3.16. Type K - Enable Order Entry Response . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+      3.17.    Type Q – Account Query Response . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+4. Support . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+Appendix A – Revision History . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+Appendix B – Optional Fields. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+Appendix C – Order Cancel Reasons . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+Appendix D – Order Reject Reasons . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+Appendix E – Liquidity Codes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+
+
+
+nasdaq.com                                                                                                                                                                               2
+1.     Overview
+NASDAQ accepts limit orders from system participants and executes matching orders when possible. Non-matching orders
+may be added to the NASDAQ Limit Order Book, a database of available limit orders, where they wait to be matched in price-
+time priority.
+
+OUCH is a simple protocol that allows NASDAQ participants to enter, replace, and cancel orders and receive executions. It is
+intended to allow participants and their software developers to integrate NASDAQ into their proprietary trading systems or to
+build custom front ends.
+
+OUCH only provides a method for participants to send orders to NASDAQ and receive updates on those orders entered. For
+information about all orders entered into and executed on the NASDAQ book, refer to the ITCH protocol (available separately).
+
+OUCH is the low-level native protocol for connecting to NASDAQ. It is designed to offer the maximum possible performance
+at the cost of flexibility and ease of use. For applications that do not require this extreme level of performance, NASDAQ
+offers other, more standard interfaces that may be more suitable and easier to develop to.
+
+
+1.1.     Architecture
+The OUCH protocol is composed of logical messages passed between the OUCH host and the client application. Each
+message type has a fixed message length.
+
+All messages sent from the OUCH host to the client are assumed to be sequenced, and their delivery must be guaranteed by
+some lower level protocol. The SoupBinTCP (available separately) are the typical lower level protocols used to guarantee the
+delivery and sequencing of OUCH messages sent from the host to the client.
+
+Messages sent from the OUCH client to the host are inherently non-guaranteed, even if they are carried by a lower level
+protocol that guarantees delivery (like TCP/IP sockets). Therefore, all host-bound messages are designed so that they can
+be benignly resent for robust recovery from connection and application failures. Each physical OUCH host port is bound
+to a NASDAQ-assigned logical OUCH Account. On a given day, every order entered on OUCH is uniquely identified by the
+combination of the logical OUCH Account and the participant-created UserRefNum field.
+
+
+1.2.     Data Types
+Alpha fields may contain upper and lowercase characters.
+
+All fixed-width alpha fields are left-justified and padded on the right with spaces.
+
+All Numeric fields are binary formatted, bigendian numbers. Four flavors of numeric fields are supported: Longs (8 bytes,
+Integers (4 bytes, Shorts (2 bytes, and Bytes (1 byte.
+
+Sizes (shares quantities, field lengths) should be treated as unsigned values.
+
+Prices are numeric fields with an implied 4 decimal places. Prices are to be treated as unsigned numeric fields, unless
+designated otherwise. The maximum price currently supported is $199,999.9900 (decimal, 7735939C hex). To flag an order
+as a market order for a cross, use the special price of $214,748.3647 decimal, 7FFFFFFF he. Orders entered with a price of
+$200,000.00 or the max integer value will also be treated as market orders.
+
+A UserRefNum is an unsigned numeric. For a given OUCH port, the UserRefNum is used as a transaction identifier, and must
+be both unique and strictly increasing throughout the trading day. The UserRefNum begins at 1 and the system ignores new
+order requests identified with UserRefNums lower than the last one processed, assuming they are retransmissions.
+
+Client however has an option to multiplex their order flow via the use of an optional tag UserRefIdx. When this tag is present
+the UserRefNum is then assumed to be linked to an “order flow channel” specified by the UserRefIdx and the above rules
+regarding the use of UserRefNum are applied only within this “order flow channel” instead of the port globally.
+
+ClOrdID is alphanumeric. All letters and numbers are allowed, as well as spaces.
+
+An optional attribute on an order is communicated via a TagValue element, constructed as follows:
+
+
+
+nasdaq.com                                                                                                                       3
+ TagValue element
+
+ Field                    Offset           Length           Type             Notes
+
+Length                    0                1                Numeric          Remaining length of the TagValue element
+OptionTag                 1                1                Numeric          Identifies the option (see Appendix B)
+OptionValue               2                variable         variable         Value of the option
+
+
+The set of optional attributes are set on an order via an options appendage. Each of the individual options formatted as a
+TagValue element, and the options appendage is then constructed by concatenating together the selected set of options.
+See Appendix B for more details.
+
+
+1.3.     Fault Redundancy
+A single OUCH Account can be bound to multiple physical OUCH machines. These OUCH machines then act as mirrors of
+each other for fault redundancy. In this configuration, both machines are able to accept orders and cancel requests, and any
+outbound messages would be simultaneously generated by both physical OUCH hosts.
+
+
+2. Inbound Messages
+Inbound messages are sent from the participant's application to the OUCH host. They are not sequenced. All Inbound
+Messages may be repeated benignly. This gives the client the ability to re-send any Inbound message if it is uncertain
+whether NASDAQ received it in the case of a connection loss or an application error.
+
+The idea of benign inbound message retransmission with end-to-end acknowledgement is fundamental to NASDAQ's fail-
+over redundancy. If your connection ever fails, there is no way for you to know if pending messages actually made it over the
+link before the failure. A robust OUCH client can safely re- send any pending messages over a mirrored link without worrying
+about generating duplicates. This applies to NASDAQ's disaster fail over capability as well; if NASDAQ ever needs to fail over
+to the backup site, some messages sent at the moment of the failure may be lost. A robust application can simply re- send
+the pending messages, making the fail over seamless to the end user.
+
+All inbound messages on an OUCH port are processed sequentially. This guarantees that if two orders are entered
+consecutively on the same connection, the first order entered will always be accepted first.
+
+
+2.1.     Type O – Enter Order
+ Enter Order
+
+ Name                     Offset           Len              Value            Notes
+
+Type                      0                1                ‘O’              Identifies this message as Enter Order Message type
+                                                                             As described above in Data Types. UserRefNum must
+UserRefNum                1                4                UserRefNum       be day-unique and strictly increasing for each OUCH
+                                                                             account.
+                                                                             B= buy
+                                                                             S = sell
+Side                      5                1                Alpha
+                                                                             T = sell short
+                                                                             E = sell short eempt
+                                                                             Total number of shares. Must be greater than zero and
+Quantity                  6                4                Integer
+                                                                             less than 1,000,000.
+Symbol                    10               8                Alpha            Stock Symbol
+                                                                             The price of the order. Please refer to the Data Types
+Price                     18               8                Price
+                                                                             section for more clarification.
+
+
+
+
+nasdaq.com                                                                                                                            4
+Enter Order
+
+Name                 Offset   Len   Value      Notes
+
+                                               Corresponds to TimeInForce (59) in Nasdaq FIX
+                                               0 = Day (Market Hours 3 = IOC
+Time In Force        26       1     Alpha      5 = GTX (Etended Hours
+                                               6 = GTT (EpireTime needs to be specified
+                                               E = After hours
+                                               Y = visible
+Display              27       1     Alpha      N = hidden
+                                               A = attributable
+                                               A = agency
+                                               P = principal
+Capacity             28       1     Alpha
+                                               R = riskless
+                                               O = other
+
+InterMarket Sweep                              Y = eligible
+                     29       1     Alpha
+Eligibility                                    N = not eligible
+                                               N = continuous market
+                                               O = opening cross (Nasdaq only
+                                               C = closing cross (Nasdaq only
+                                               H = halt/IPO (Nasdaq only
+CrossType            30       1     Alpha
+                                               S = supplemental (Nasdaq only
+                                               R = retail (BX only
+                                               E = etended life (Nasdaq only
+                                               A = after hours close (Nasdaq only
+                                               Customer order identifier. ClOrdID will not be checked
+ClOrdID              31       14    Alpha
+                                               for day-uniqueness for each OUCH account.
+Appendage Length     45       2     Integer    The length of the remaining Optional Appendage field.
+                                               The available options supported on this message are:
+                                                 Firm
+                                                 MinQty
+                                                 CustomerType
+                                                 MaxFloor
+                                                 PriceType
+                                                 PegOffset
+                                                 Discretion
+                                                 DiscretionPrice
+                                                 DiscretionPriceType
+Optional Appendage   47       var   TagValue     DiscretionPegOffset
+                                                 PostOnly
+                                                 RandomReserves
+                                                 Route
+                                                 ExpireTime
+                                                 TradeNow
+                                                 HandleInst
+                                                 GroupID
+                                                 SharesLocated
+                                                 UserRefIdx
+                                               See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                              5
+2.2.     Type U – Replace Order Request
+The Replace Order Message allows you to alter most of the attributes of an order in a single message. This is more efficient
+than canceling an existing order and immediately succeeding it with a new order. Replacing an order always gives it a new
+timestamp for its time priority on the book. If you wish you simply partially cancel an order and retain its time priority, send a
+Cancel Order Message instead.
+
+There are two Order UserRefNums in the Replace Order Message. The first must be filled out with the Order UserRefNum of
+the existing order; the second must be a new Order UserRefNum for the replacement. The replacement Order UserRefNum
+must be unique in the same way as Order UserRefNums are in the Enter Order Message, and replacement Order
+UserRefNums may not be the same as the UserRefNum sent in Enter Order Messages. Any replacement Order UserRefNum
+that has already been used in another Enter Order Message or Replace Order Message will be ignored.
+
+NASDAQ may respond to the Replace Order Message in several ways:
+
+1. If the order for the existing Order UserRefNum is no longer live or if the replacement Order UserRefNum was already used,
+   the replacement will be silently ignored. The replacement Order UserRefNum will not be consumed and may be reused in
+   this case.
+2. If the order for the existing Order UserRefNum is live but the details of the replace are invalid (e.g.: new Shares >=
+   1,000,000), a Cancel Order Message will take the eisting order out of the book. The replacement Order UserRefNum will
+   not be consumed, and may be reused in this case.
+3. If the order for the existing Order UserRefNum is live but the existing order cannot be canceled (e.g. the existing Order
+   is a cross order in the late period), there will be an Order Reject Message. This reject message denotes that no change
+   has occurred to the existing order; the existing order remains fully intact with its original instructions. The Order Reject
+   Message consumes the replacement Order UserRefNum, so the replacement Order UserRefNum may not be reused.
+4. If the order for the existing Order UserRefNum is live and can be replaced, you will receive either a Replaced Message or
+   an Atomically Replaced and Canceled Message.
+
+Replace Order Messages may be chained together, so that a single order is replaced over and over again. There is no limit to
+the number of replaces; however no single order/replace chain may execute more than 999,999 shares cumulatively.
+
+The Shares on the replace denote the total number of shares liable for the whole chain. Here is an example:
+
+    Enter Order Message for 500 shares
+
+    Accepted Message for 500 shares
+
+    Executed Message for 100 shares
+
+At this point, you decide to replace the order. If you want to be exposed for
+
+    a. the remaining 400 shares, send the Replace Order Message with 500 Shares. This 500 equals the 400 eposed plus
+        the 100 previously executed.
+    b. a new 500 shares, send the Replace Order Message with 600 Shares. This 600 equals the 500 new shares plus the
+        100 previously executed.
+
+This may seem a bit confusing at first, but it inhibits the risk of double-liability throughout the order/replace chain.
+
+ Replace Order Request
+
+ Name                      Offset            Len               Value            Notes
+
+Type                       0                 1                 ‘U’              Identifies this message as Replace
+Order Message type
+                                                                                This must be filled out with the Order UserRefNum
+OrigUserRefNum             1                 4                 UserRefNum       sent on the Enter Order Message or last Replace
+                                                                                Order Message.
+
+
+
+
+nasdaq.com                                                                                                                           6
+Replace Order Request
+
+Name                    Offset   Len   Value        Notes
+
+                                                    As described above in Data Types. The replacement
+UserRefNum              5        4     UserRefNum   Order UserRefNum must be unique and strictly
+                                                    increasing for each OUCH account.
+                                                    Total number of shares liable, inclusive of previous
+                                                    executions and Self Match Prevention decremented
+Quantity                9        4     Integer
+                                                    shares on this order chain. Must be greater than zero
+                                                    and less than 1,000,000.
+                                                    The price of the replacement order. Please refer to the
+Price                   13       8     Price
+                                                    section in Data Types for more clarification.
+                                                    Corresponds to TimeInForce (59) in Nasdaq FIX
+                                                    0 = Day (Market Hours
+Time In Force           21       1     Alpha        3 = IOC
+                                                    5 = GTX (Etended Hours
+                                                    6 = GTT (EpireTime needs to be specified
+                                                    Y = visible
+Display                 22       1     Alpha        N = hidden
+                                                    A = attributable
+
+InterMarket Sweep                                   Y = eligible
+                        23       1     Alpha
+Eligibility                                         N = not eligible
+ClOrdID                 24       14    Alpha        Customer order identifier for replacement order
+Appendage Length        38       2     Integer      The length of the remaining Optional Appendage field.
+                                                    The available options supported on this message are:
+                                                      MinQty
+                                                      MaxFloor
+                                                      PriceType
+                                                      PostOnly
+                                                      ExpireTime
+                                                      TradeNow
+                                                      HandleInst
+                                                      RandomReserves
+                                                      PegOffset
+                                                      DiscretionPrice
+Optional Appendage      40       var   Options        DiscretionPriceType
+                                                      DiscretionOffset
+                                                      CustomerType
+                                                      GroupID
+                                                      SharesLocated
+                                                      LocateBroker
+                                                      UserRefIdx
+                                                    See Appendix B for more detail
+                                                    If appendage values on a Replace Order Request are
+                                                    unspecified, they will default to the tag value used in
+                                                    the original order message (except for SharesLocated
+                                                    and LocateBroker which need to be specified for each
+                                                    Replace Order request).
+
+
+
+
+nasdaq.com                                                                                                    7
+2.3.    Type X – Cancel Order Request
+The Cancel Order Message is used to request that an order be canceled or reduced. In the Cancel Order Message, you must
+specify the new "intended order size" for the order. The "intended order size" is the maximum number of shares that can be
+executed in total after the cancel is applied.
+
+Note that the Appendage Length and Optional Appendage fields are optional on this message type.
+
+ Cancel Order Request
+
+ Name                      Offset            Len             Value            Notes
+
+Type                       0                 1              ‘X’               Cancel Order Message
+                                                                              The Order UserRefNum as was originally transmitted
+UserRefNum                 1                 4              UserRefNum
+                                                                              in an Enter Order Message
+                                                                              This is the new intended order size. This limits the
+                                                                              maximum number of shares that can potentially be
+Quantity                   5                 4              Integer           executed in total after the cancel is applied. Entering
+                                                                              a zero here will cancel any remaining open shares on
+                                                                              this order.
+Appendage Length           9                 2              Integer           The length of the remaining Optional Appendage field.
+                                                                              The available options supported on this message are:
+Optional Appendage         11                var            TagValue              UserRefIdx
+                                                                              See Appendix B for more detail
+
+
+To cancel the entire balance of an order, you would enter a Cancel Order Message with a Shares field of zero.
+
+Note that the only acknowledgement to a Cancel Order Message is the resulting Canceled Order Message. There is no “too
+late to cancel” message since by the time you received it, you would already have gotten the execution. Superfluous Cancel
+Order Messages are silently ignored.
+
+
+2.4.    Type M – Modify Order Request
+The Modify Order Message is used to request modifications that will not affect order priority on the book. Since priority of
+the order does not change (exception noted), allowed modifications are restricted to only the ones specified in the message
+details below. Increasing share amount is not allowed and requests to do so will be ignored.
+
+Note that the Appendage Length and Optional Appendage fields are optional on this message type.
+
+ Modify Order Request
+
+ Name                      Offset            Len             Value            Notes
+
+Type                       0                 1              ‘M’               Modify Order Message
+                                                                              The Order UserRefNum as was originally transmitted
+UserRefNum                 1                 4              UserRefNum
+                                                                              in an Enter Order Message
+                                                                              The new side to be associated with the order.
+                                                                              B= buy
+                                                                              S = sell
+                                                                              T = sell short
+                                                                              E = sell short eempt
+Side                       5                 1              Alpha
+                                                                              Only the following modifications are allowed:
+                                                                              S      E
+                                                                              S      T
+                                                                              E      T
+
+
+
+
+nasdaq.com                                                                                                                              8
+ Modify Order Request
+
+ Name                      Offset            Len               Value             Notes
+
+                                                                                 This is the new intended order size. This limits the
+                                                                                 maximum number of shares that can potentially be
+Quantity                   6                 4                 Integer           executed in total after the cancel is applied. Entering
+                                                                                 a zero here will cancel any remaining open shares on
+                                                                                 this order.
+Appendage Length           10                2                 Integer           The length of the remaining Optional Appendage field.
+                                                                                 The available options supported on this message are:
+Optional Appendage         12                var               TagValue            UserRefIdx
+                                                                                 See Appendix B for more detail
+
+
+
+2.5.     Type C - Mass Cancel Request
+The Mass Cancel Request message allows firms to initiate the cancellation of one or more orders that are currently booked
+at the exchange if they match the criteria specified in the request. If no optional criteria are specified then all orders for
+the specified firm on the account will be cancelled. Optional criteria can be specified in the Appendage field using the tags
+described below.
+
+ Mass Cancel Request
+
+ Name                      Offset            Len               Value             Notes
+
+                                                                                 Identifies this message as a Mass Cancel Request
+Type                       0                 1                 ‘C’
+                                                                                 message type
+                                                                                 As described above in Data Types. User Reference
+User Reference Number      1                 4                 UserRefNum        Numbers must be day-unique and strictly increasing
+                                                                                 for each Order Port.
+                                                                                 This field should contain all caps. Firm identifier for
+                                                                                 the order entry firm. One logical OUCH account can
+Firm                       5                 4                 Alpha
+                                                                                 potentially enter orders for multiple firms in a Service
+                                                                                 Bureau configuration.
+                                                                                 Optional, Space filled if not specified
+Symbol                     9                 8                 Alpha
+                                                                                 Symbol to mass cancel orders on
+                                                                                 Length of entire optional appendage. Zero (0) if no
+Appendage Length           17                2                 Integer
+                                                                                 appendage follows
+                                                                                 The available options supported on this message are:
+                                                                                   Side
+Optional Appendage         19                var               TagValue            Group ID
+                                                                                   UserRefIdx
+                                                                                 See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                                  9
+2.6.    Type D – Disable Order Entry Request
+The Disable Order Entry Request allows firms the ability to initiate the following requests to block submissions of new orders
+on a particular account.
+
+ Disable Order Entry Request
+
+ Name                      Offset          Len              Value            Notes
+
+                                                                             Identifies this message as a Disable Order Entry
+Type                       0               1                ‘D’
+                                                                             Request message type.
+                                                                             As described above in Data Types. User Reference
+User Reference Number      1               4                UserRefNum       Numbers must be day-unique and strictly increasing
+                                                                             for each Order Port.
+                                                                             This field should contain all caps. Firm identifier for
+                                                                             the order entry firm. One logical OUCH account can
+Firm                       5               4                Alpha
+                                                                             potentially enter orders for multiple firms in a Service
+                                                                             Bureau configuration.
+Appendage Length           9               2                Integer          The length of the remaining Optional Appendage field.
+                                                                             The available options supported on this message are:
+Optional Appendage         11              var              TagValue           UserRefIdx
+                                                                             See Appendix B for more detail
+
+
+
+2.7.    Type E – Enable Order Entry Request
+The Enable Order Entry Request allows firms the ability to initiate the following requests to unblock submission of new orders
+on a particular account.
+
+ Enable Order Entry Request
+
+ Name                      Offset          Len              Value            Notes
+
+                                                                             Identifies this message as a Enable Order Entry
+Type                       0               1                ‘E’
+                                                                             Request message type
+                                                                             As described above in Data Types. User Reference
+User Reference Number      1               4                UserRefNum       Numbers must be day-unique and strictly increasing
+                                                                             for each Order Port.
+                                                                             This field should contain all caps. Firm identifier for
+                                                                             the order entry firm. One logical OUCH account can
+Firm                       5               4                Alpha
+                                                                             potentially enter orders for multiple firms in a Service
+                                                                             Bureau configuration.
+Appendage Length           9               2                Integer          The length of the remaining Optional Appendage field.
+                                                                             The available options supported on this message are:
+Optional Appendage         11              var              TagValue           UserRefIdx
+                                                                             See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                          10
+2.8.     Type Q – Account Query Request
+The Account Query Request message can be used when recovering state to request the next available UserRefNum that can
+be used for identifying new transactions.
+
+Note that the Appendage Length and Optional Appendage fields are optional on this message type.
+
+ Account Query Request
+
+ Name                     Offset            Len             Value           Notes
+
+Type                      0                 1              ‘Q’              Account Query Request Message
+Appendage Length          1                 2              Integer          The length of the remaining Optional Appendage field.
+                                                                            The available options supported on this message are:
+Optional Appendage        3                 var            TagValue           UserRefIdx
+                                                                            See Appendix B for more detail
+
+
+
+
+3. Outbound Messages
+Outbound messages are generated by the OUCH host port and received by your client application.
+
+
+3.1.     Type S – System Event
+System Event Messages signal events that affect the entire NASDAQ system:
+
+ System Event Message
+
+ Name                     Offset            Len             Value           Notes
+
+Type                      0                 1              ‘S’              System Event Message
+Timestamp                 1                 8              Timestamp        Expressed as nanoseconds since midnight
+                                                                            S =Start Of Day, indicating that exchange is open and
+                                                                            is ready to accept orders.
+
+Event Code                9                 1              Alpha            E = End Of Day, indicating that the exchange is closed
+                                                                            and will no longer accept new orders. Note that it is
+                                                                            still possible to receive breaks and cancels after this
+                                                                            event.
+
+
+
+3.2.     Type A – Order Accepted
+This message acknowledges the receipt and acceptance of a valid Enter Order Message. The data fields from the Enter Order
+Message are echoed back in this message. Note that the accepted values may differ from the entered values for some fields.
+
+Accepted Messages normally come before any Executed Messages or Canceled Messages for an order. However, when the
+Order State field of an Accepted Message is Order Dead (“D”), no additional messages will be received for that order, as
+Order Dead means that the order was accepted and automatically canceled.
+
+ Order Accepted
+
+ Name                     Offset            Len             Value           Notes
+
+Type                      0                 1              ‘A’              Accepted Message Identifier
+Timestamp                 1                 8              Timestamp        Expressed as nanoseconds since midnight
+UesrRefNum                9                 4              UserRefNum       The order UserRefNum as entered
+Side                      13                1              Alpha            The side as entered
+Quantity                  14                4              Integer          Total number of shares accepted
+Symbol                    18                8              Alpha            Stock symbol as entered
+
+
+
+nasdaq.com                                                                                                                       11
+Order Accepted
+
+Name                     Offset   Len   Value      Notes
+
+                                                   The accepted price of the order. Please note that the
+                                                   accepted price could potentially be different than
+Price                    26       8     Price      the entered price if the order was re-priced by the
+                                                   exchange on entry. The accepted price will always be
+                                                   better than or equal to the entered price.
+                                                   The accepted Time in Force of the order. Please
+                                                   note that the accepted Time in Force may potentially
+Time In Force            34       1     Alpha      be different than the entered Time in Force. The
+                                                   accepted Time in Force will always be equal to or
+                                                   shorter in scope than the entered Time in Force
+                                                   The accepted display on the order
+                                                   Y = visible
+Display                  35       1     Alpha      N = hidden
+                                                   A = attributable
+                                                   Z = conformant
+                                                   The day-unique Order Reference Number assigned by
+Order Reference Number   36       8     Numeric
+                                                   NASDAQ to this order
+Capacity                 44       1     Alpha      The capacity specified on the order
+
+InterMarket Sweep                                  Y = eligible
+                         45       1     Alpha
+Eligibility                                        N = not eligible
+CrossType                46       1     Alpha      The cross type as entered
+                                                   L = Order Live
+Order State              47       1     Alpha
+                                                   D = Order Dead
+ClOrdID                  48       14    Alpha      Customer order identifier
+Appendage Length         62       2     Integer    The length of the remaining Optional Appendage field.
+                                                   The available options supported on this message are:
+                                                     Firm
+                                                     MinQty
+                                                     CustomerType
+                                                     MaxFloor
+                                                     PriceType
+                                                     PegOffset
+                                                     Discretion
+                                                     DiscretionPrice
+                                                     DiscretionPegType
+                                                     DiscretionPegOffset
+Optional Appendage       64       var   TagValue     PostOnly
+                                                     RandomReserves
+                                                     Route
+                                                     ExpireTime
+                                                     TradeNow
+                                                     HandleInst
+                                                     BBO Weight
+                                                     Indicator
+                                                     GroupID
+                                                     SharesLocated
+                                                     UserRefIdx
+                                                   See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                12
+3.3.      Type U – Order Replaced
+This message acknowledges the receipt and acceptance of a valid Replace Order Message. The data fields from the Replace
+Order Message are echoed back in this message. Note that the accepted values may differ from the entered values for some
+fields. You will receive one and only one of these two for each replacement.
+
+Like Accepted Messages, Replaced Messages use the Order State field to denote that a replace was accepted and then
+automatically canceled when the Order State is Order Dead (“D”). No further Executed Messages nor Canceled Messages will
+be received for the replaced order unless the Order State is not Order Dead.
+
+The Shares field on the replace indicates how many shares were left exposed when the replacement completed. E.g.:
+
+    Enter Order Message for 500 shares
+
+    Accepted Message for 500 shares
+
+    Executed Messages for 100 shares
+
+    Replace Order Message for 500 shares
+
+    Replaced Messages with 400 shares
+
+The 400 shares in the Replace Message indicate that 400 shares eist on the book. This same scenario could happen if the
+execution was in flight back to you while the Replace Order Message was traveling to NASDAQ as follows:
+
+    Enter Order Message for 500 shares
+
+    Accepted Message for 500 shares
+
+    Replace Order Message for 500 shares
+
+    Executed Messages for 100 shares on original order
+
+    Replaced Messages with 400 shares
+
+ Replaced Message
+
+ Name                     Offset           Len              Value              Notes
+
+Type                      0                1                ‘U’                Replaced Message Identifier
+Timestamp                 1                8                Timestamp          Expressed as nanoseconds since midnight
+OrigUserRefNum            9                4                UserRefNum         The UserRefNum of the order being replaced
+UserRefNum                13               4                UserRefNum         The UserRefNum of the replacement order, as entered
+                                                                               The side indicator as entered on the original order in
+Side                      17               1                Alpha
+                                                                               the chain
+Quantity                  18               4                Integer            Total number of shares outstanding
+Symbol                    22               8                Alpha              Stock symbol as entered
+                                                                               The accepted price of the replacement. Please note
+                                                                               that the accepted price could potentially be different
+Price                     30               8                Price              than the entered price if the order was re-priced by
+                                                                               NASDAQ on entry. The accepted price will always be
+                                                                               better than or equal to the entered.
+                                                                               The accepted Time in Force of the replacement.
+                                                                               Please note that the accepted Time in Force may
+Time In Force             38               1                Alpha              potentially be different than the entered Time in Force.
+                                                                               The accepted Time in Force will always be equal to or
+                                                                               shorter in scope than the entered Time in Force
+                                                                               The accepted display type for the order.
+                                                                               Y = visible
+Display                   39               1                Alpha              N = hidden
+                                                                               A = attributable
+                                                                               Z = conformant
+
+
+
+nasdaq.com                                                                                                                              13
+ Replaced Message
+
+ Name                     Offset           Len              Value             Notes
+
+                                                                             The day-unique Order Reference Number assigned by
+ Order ReferenceNumber    40               8                Numeric
+                                                                             NASDAQ to this order
+ Capacity                 48               1                Alpha            The capacity specified on the order
+
+ InterMarketSweep                                                            Y = eligible
+                          49               1                Alpha
+ Eligibility                                                                 N = not eligible
+ CrossType                50               1                Alpha            The cross type as entered
+                                                                             L = Order Live
+ Order State              51               1                Alpha
+                                                                             D = Order Dead
+ ClOrdID                  52               14               Alpha            Customer order identifier for replacement order
+ Appendage Length         66               2                Numeric          The length of the remaining Optional Appendage field.
+                                                                             The available options supported on this message are:
+                                                                                Firm
+                                                                                MinQty
+                                                                                MaxFloor
+                                                                                PriceType
+                                                                                PostOnly
+ Optional Appendage       68               var              Options
+                                                                                ExpireTime
+                                                                                TradeNow
+                                                                                HandleInst
+                                                                                BBO Weight Indicator
+                                                                                UserRefIdx
+                                                                             See Appendix B for more detail
+
+
+
+3.4.        Type C – Order Canceled
+A Canceled Message informs you that an order has been reduced or canceled. This could be acknowledging a Cancel Order
+Message, or it could be the result of the order timing out or being canceled automatically.
+
+Please note that a Canceled Message does not necessarily mean the entire order is dead; some portion of the order may still
+be alive.
+
+Order Canceled message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ Canceled Message
+
+ Name                     Offset           Len              Value             Notes
+
+ Type                     0                1                ‘C’              Canceled Order Message
+ Timestamp                1                8                Timestamp        Expressed as nanoseconds since midnight
+                                                                             The UserRefNum of the order being (partially)
+ UserRefNum               9                4                UserRefNum
+                                                                             canceled
+                                                                             The number of shares being decremented from the
+ Quantity                 13               4                Numeric
+                                                                             order. This number is incremental, not cumulative
+                                                                             Reason the order was reduced or canceled. See
+ Reason                   17               1                Alpha
+                                                                             Appendix C for the available reasons.
+ Appendage Length         18               2                Integer          The length of the remaining Optional Appendage field.
+                                                                             The available options supported on this message are:
+ Optional Appendage       20               var              TagValue            UserRefIdx
+                                                                             See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                       14
+3.5.     Type D – AIQ Canceled
+AIQ Canceled message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ AIQ Canceled Message
+
+ Name                     Offset         Len              Value           Notes
+
+Type                      0              1                ‘D’             Canceled Order Message
+Timestamp                 1              8                Timestamp       Expressed as nanoseconds since midnight
+UserRefNum                9              4                UserRefNum      The UserRefNum of the order being reduced
+                                                                          The number of shares just decremented from the
+Decrement Shares          13             4                Numeric
+                                                                          order. This number is incremental, not cumulative.
+                                                                          Reason the order was reduced or canceled. For an AIQ
+Reason                    17             1                Alpha
+                                                                          Cancel message, this value will always be “Q”.
+                                                                          Shares that would have executed if the trade would
+                                                                          have occurred.
+                                                                          Depending on AIQ type and the sizes of orders in
+Quantity prevented from                                                   question the value for this field could either be the
+                          18             4                Integer
+trading                                                                   same or different than the Decrement Shares field.
+                                                                          For “Decrement both” they are always the same. For
+                                                                          “Cancel oldest” they will be different if the incoming
+                                                                          order is smaller than the resting order.
+Execution Price           22             8                Price           Price at which the trade would have occurred
+                                                                          Liquidity flag the order would have received. See
+Liquidity Flag            30             1                Alpha
+                                                                          Appendix E.
+AIQ Strategy              31             1                Alpha           AIQ strategy used on the cancelled order.
+Appendage Length          32             2                Integer         The length of the remaining Optional Appendage field.
+                                                                          The available options supported on this message are:
+Optional Appendage        34             var              TagValue          UserRefIdx
+                                                                          See Appendix B for more detail
+
+
+
+3.6.     Type E – Order Executed
+An Executed Order Message informs you that all or part of an order has been executed.
+
+ Executed Message
+
+ Name                     Offset         Len              Value           Notes
+
+Type                      0              1                ‘E’             Order Executed Message
+Timestamp                 1              8                Timestamp       Expressed as nanoseconds since midnight
+UserRefNum                9              4                UserRefNum      The UserRefNum of the order being executed
+Quantity                  13             4                Numeric         The incremental number of shares just executed.
+Price                     17             8                Price           The price at which the shares were executed
+                                                                          Liquidity flag the order would have received. See
+Liquidity Flag            25             1                Alpha
+                                                                          Appendix E.
+                                                                          Assigned by the exchange to identify the trade. Both
+Match Number              26             8                Numeric         the buy and the sell executions participating in the
+                                                                          trade will share the same match number.
+Appendage Length          34             2                Numeric         The length of the remaining Optional Appendage field.
+
+
+
+
+nasdaq.com                                                                                                                         15
+3.7.      Type B – Broken Trade
+A Broken Trade Message informs you that an execution has been broken. The trade is no longer good and will not clear. The
+reason for the break is given.
+
+You will always get an Executed Order Message prior to getting a Broken Trade Message for a given execution.
+
+Broken Trade message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ Broken Trade Message
+
+ Name                      Offset          Len               Value         Notes
+
+Type                       0               1                ‘B’           Broken Trade Message
+Timestamp                  1               8                Timestamp     Expressed as nanoseconds since midnight
+                                                                          The UserRefNum of the order whose execution
+UserRefNum                 9               4                UserRefNum
+                                                                          corresponding to given Match Number is being broken
+                                                                          Match Number as transmitted in the Executed Order
+Match Number               13              8                Numeric
+                                                                          Message being broken.
+                                                                          The reason the trade was broken. The values currently
+                                                                          supported are:
+                                                                          E = Erroneous trade deemed clearly erroneous
+Reason                     21              1                Alpha
+                                                                          C = Consent both parties agreed to break the trade
+                                                                          S = Supervisory manually broken by supervisory
+                                                                          X = Eternal trade broken by an eternal third party
+ClOrdID                    22              14               Alpha         Customer order identifier
+Appendage Length           36              2                Integer       The length of the remaining Optional Appendage field.
+                                                                          The available options supported on this message are:
+Optional Appendage         38              var              TagValue        UserRefIdx
+                                                                          See Appendix B for more detail
+
+
+
+3.8.      Type J – Rejected
+A Rejected Message may be sent in response to an Enter Order Message or Replace Order Message if the order or replace
+cannot be accepted at this time. The reason for the rejection is given.
+
+The Order UserRefNum of a Rejected Message cannot be re-used.
+
+Rejected message will only have the Appendage Length and Optional Appendage fields present if the Appendage Length
+was specified on the inbound message.
+
+ Rejected Order
+ Message
+
+ Name                      Offset          Len               Value         Notes
+
+Type                       0               1                ‘J’           Rejected Order Message
+Timestamp                  1               8                Timestamp     Expressed as nanoseconds since midnight
+UserRefNum                 9               4                UserRefNum    The UserRefNum of the order being rejected
+Reason                     13              2                Numeric       The reason the order was rejected. See Appendix D.
+ClOrdID                    15              14               Alpha         Customer order identifier for order being rejected
+Appendage Length           29              2                Integer       The length of the remaining Optional Appendage field.
+                                                                          The available options supported on this message are:
+Optional Appendage         31              var              TagValue        UserRefIdx
+                                                                          See Appendix B for more detail
+
+
+
+nasdaq.com                                                                                                                     16
+3.9.    Type P – Cancel Pending
+A Cancel Pending Message is sent in response to a cancel request for a cross order during a pre-cross late period signifying
+that it cannot be canceled at this time, but any unexecuted portion of this order will automatically be canceled immediately
+after the cross completes.
+
+This message will only be sent once for a given UserRefNum. Duplicate cancel requests for the same UserRefNum will be
+ignored by OUCH.
+
+Cancel Pending message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ Cancel Pending Message
+
+ Name                        Offset         Len              Value             Notes
+
+Type                       0                1                ‘P’               Cancel Pending Message
+Timestamp                  1                8                Timestamp         Expressed as nanoseconds since midnight
+                                                                               The UserRefNum of the order suffering the pending
+UserRefNum                 9                4                UserRefNum
+                                                                               cancel
+Appendage Length           13               2                Integer           The length of the remaining Optional Appendage field.
+                                                                               The available options supported on this message are:
+Optional Appendage         15               var              TagValue            UserRefIdx
+                                                                               See Appendix B for more detail
+
+
+
+3.10.   Type I – Cancel Reject
+A Cancel Reject Message is sent in response to a partial cancel request (with non-zero “intended order size”) for a cross
+order during a pre-cross late period signifying that it cannot be partially canceled at this time. No automatic cancel will be
+scheduled for this order. Clients could repeat their request for any unexecuted portion of the order after the cross completes.
+
+This message will only be sent once for a given UserRefNum. Duplicate cancel requests for the same UserRefNum will be
+ignored by OUCH.
+
+Cancel Reject message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ Cancel Reject Message
+
+ Name                        Offset         Len              Value             Notes
+
+Type                       0                1                ‘I’               Cancel Reject Message
+Timestamp                  1                8                Timestamp         Expressed as nanoseconds since midnight
+                                                                               The UserRefNum of the order that was cancel-
+UserRefNum                 9                4                UserRefNum
+                                                                               rejected
+Appendage Length           13               2                Integer           The length of the remaining Optional Appendage field.
+                                                                               The available options supported on this message are:
+Optional Appendage         15               var              TagValue            UserRefIdx
+                                                                               See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                         17
+3.11.     Type T – Order Priority Update
+A Priority Update Message is sent whenever priority of the order has been changed by the system.
+
+Order Priority Update message will only have the Appendage Length and Optional Appendage fields present if the
+Appendage Length was specified on the inbound message.
+
+ Order Priority Update Message
+
+ Name                     Offset         Len              Value             Notes
+
+Type                      0              1                ‘T’               Order Priority Update Message
+Timestamp                 1              8                Timestamp         Expressed as nanoseconds since midnight
+                                                                            The UserRefNum of the order whose priority was
+UserRefNum                9              4                UserRefNum
+                                                                            updated
+Price                     13             8                Price             The limit price of the order
+                                                                            The new display for the order
+Display                   21             1                Alpha
+                                                                            Y = Anonymous – Price to Comply
+                                                                            The day-unique Order Reference Number assigned
+                                                                            by NASDAQ to this order. As a result of the updated
+Order Reference Number    22             8                Numeric
+                                                                            priority, a new order reference number will be
+                                                                            assigned
+Appendage Length          30             2                Integer           The length of the remaining Optional Appendage field.
+                                                                            The available options supported on this message are:
+Optional Appendage        32             var              TagValue            UserRefIdx
+                                                                            See Appendix B for more detail
+
+
+
+3.12.     Type M – Order Modified
+An Order Modified Message is sent in response to an order modify request.
+
+Order Modified message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+ Order Modified Message
+
+ Name                     Offset         Len              Value             Notes
+
+Type                      0              1                ‘M’               Order Modified Message
+Timestamp                 1              8                Timestamp         Expressed as nanoseconds since midnight
+UserRefNum                9              4                UserRefNum        The UserRefNum of the order that was modified
+Side                      13             1                Alpha             The side as entered in the Order Modify Request
+Quantity                  14             4                Numeric           Total number of shares outstanding
+Appendage Length          18             2                Integer           The length of the remaining Optional Appendage field.
+                                                                            The available options supported on this message are:
+Optional Appendage        20             var              TagValue            UserRefIdx
+                                                                            See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                        18
+3.13.    Type R – Order Restated
+The Order Restated Message is sent to indicate that the system has modified an order as part of its order management.
+
+ Order Restated Message
+
+ Name                     Offset          Len             Value           Notes
+
+Type                      0              1                ‘R’             Order Restated Message
+Timestamp                 1              8                Timestamp       Expressed as nanoseconds since midnight
+UserRefNum                9              4                UserRefNum      The UserRefNum of the order being restated
+                                                                          The reason for this order being restated
+Reason                    13             1                Alpha           R = Refresh of display on an order with reserves
+                                                                          P = Update of displayed price
+Appendage Length          14             2                Numeric         The length of the remaining Optional Appendage field.
+                                                                          The available options supported on this message are:
+                                                                             Display Quantity
+                                                                             Display Price
+Optional Appendage        16             var              Options
+                                                                             SecondaryOrdRefNum
+                                                                             UserRefIdx
+                                                                          See Appendix B for more detail
+
+
+
+3.14.    Type X - Mass Cancel Response
+This message acknowledges the receipt of a valid Mass Cancel Request message. The data fields from the Mass Cancel
+Request message are echoed back in this message.
+
+ Mass Cancel Response
+
+ Name                     Offset          Len             Value            Notes
+
+                                                                           Identifies this message as a Mass Cancel Request
+Type                      0               1               ‘X’
+                                                                           message type
+Timestamp                 1               8               Timestamp        Expressed as nanoseconds since midnight
+User Reference Number     9               4               UserRefNum       The UserRefNum from the inbound message
+                                                                           This field should contain all caps. Firm identifier for
+                                                                           the order entry firm. One logical OUCH account can
+Firm                      13              4               Alpha
+                                                                           potentially enter orders for multiple firms in a Service
+                                                                           Bureau configuration.
+                                                                           Optional, Space filled if not specified
+Symbol                    17              8               Alpha
+                                                                           Symbol to mass cancel orders on
+                                                                           Length of entire optional appendage. Zero (0) if no
+Appendage Length          25              2               Integer
+                                                                           appendage follows
+                                                                           The available options supported on this message are:
+                                                                             Side
+Optional Appendage        27              var             TagValue           Group ID
+                                                                             UserRefIdx
+                                                                           See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                        19
+3.15.   Type G - Disable Order Entry Response
+This message acknowledges the receipt of the Disable Order Entry Request message. The data fields from the Enter Order
+Message are echoed back in this message.
+
+ Disable Order Entry Response
+
+ Name                    Offset            Len           Value           Notes
+
+                                                                         Identifies this message as a Disable Order Entry
+Type                     0               1               ‘G’
+                                                                         Request message type
+Timestamp                1               8               Timestamp       Expressed as nanoseconds since midnight
+User Reference Number    9               4               UserRefNum      The UserRefNum from the inbound message
+                                                                         This field should contain all caps. Firm identifier for
+                                                                         the order entry firm. One logical OUCH account can
+Firm                     13              4               Alpha
+                                                                         potentially enter orders for multiple firms in a Service
+                                                                         Bureau configuration.
+Appendage Length         17              2               Integer         The length of the remaining Optional Appendage field.
+                                                                         The available options supported on this message are:
+Optional Appendage       19              var             TagValue          UserRefIdx
+                                                                         See Appendix B for more detail
+
+
+
+3.16.   Type K - Enable Order Entry Response
+This message acknowledges the receipt of the Enable Order Entry Request message. The data fields from the Enable Order
+Entry Request message are echoed back in this message.
+
+ Enable Order Entry Response
+
+ Name                    Offset            Len           Value           Notes
+
+                                                                         Identifies this message as a Disable Order Entry
+Type                     0               1               ‘K’
+                                                                         Request message type
+Timestamp                1               8               Timestamp       Expressed as nanoseconds since midnight
+User Reference Number    9               4               UserRefNum      The UserRefNum from the inbound message
+                                                                         This field should contain all caps. Firm identifier for
+                                                                         the order entry firm. One logical OUCH account can
+Firm                     13              4               Alpha
+                                                                         potentially enter orders for multiple firms in a Service
+                                                                         Bureau configuration.
+Appendage Length         17              2               Integer         The length of the remaining Optional Appendage field.
+                                                                         The available options supported on this message are:
+Optional Appendage       19              var             TagValue          UserRefIdx
+                                                                         See Appendix B for more detail
+
+
+
+
+nasdaq.com                                                                                                                      20
+3.17.           Type Q – Account Query Response
+The Account Query Response message in sent in response to an Account Query Request to indicate the next available
+UserRefNum that can be used to identify new transactions.
+
+Account Query message will only have the Appendage Length and Optional Appendage fields present if the Appendage
+Length was specified on the inbound message.
+
+    Account Query Response Message
+
+    Name                                    Offset                     Len                        Value                 Notes
+
+    Type                                    0                          1                          ‘Q’                   Account Query Response Message
+    Timestamp                               1                          8                          Timestamp             Expressed as nanoseconds since midnight
+    NextUserRefNum                          9                          4                          UserRefNum            The next available UserRefNum
+    Appendage Length                        13                         2                          Integer               The length of the remaining Optional Appendage field.
+                                                                                                                        The available options supported on this message are:
+    Optional Appendage                      15                         var                        TagValue                 UserRefIdx
+                                                                                                                        See Appendix B for more detail
+
+
+
+
+4. Support
+If you have any questions or comments about this specification, email tradingservices@nasdaq.com. We welcome
+suggestions for new features or improvements.
+
+
+Appendix A – Revision History
+    Revision #          Date                       Change
+
+    1.0                 10/4/2022                  Added the orders entered message to Data Types section
+    1.01                2/10/2023                  Added GroupID and SharesLocated to the Optional Appendage table
+                                                   Removed “Trade Correction Message” section and removed Reference Price and Reference Price Type as
+    1.02                5/2/2023
+                                                   optional fields
+    1.03                12/28/2023                 Added Mass Cancel, Disable Order Entry, and Enable Order Entry message types
+    1.04                5/1/2024                   Clarified optional appendage behavior in the header of relevant message type sections.
+
+
+
+
+Appendix B – Optional Fields
+    OptionTag           Option                                   Size1        Type                Notes                                                              Default2
+
+                                                                                                  An alternative order reference number used when
+                                                                                                  publishing the order on the Nasdaq market data
+    1                   SecondaryOrdRefNum                      8             Numeric                                                                               Not applicable
+                                                                                                  feeds (identifying, for example, the displayed
+                                                                                                  portion of a reserve order)
+                                                                                                  This field should contain all caps. Firm identifier
+                                                                                                  for the order entry firm. One logical OUCH
+                                                                                                  account can potentially enter orders for multiple                 Blank-filled (spaces),
+    2                   Firm                                    4             Alpha
+                                                                                                  firms in a Service Bureau configuration. If this                  use the default firm
+                                                                                                  field is blank-filled, the default firm for the OUCH
+                                                                                                  account will be used.
+
+
+
+
+1       The Size cited is that of just the optional field itself, not the encasing TagValue element
+
+2       Default value applies only to the Enter Order message. When a tag is unspecified on a Replace Order message, the value will be defaulted to the tag value used in the original Enter Order
+        message (except for SharesLocated and LocateBroker which need to be specified for each Replace Order request).
+
+
+
+nasdaq.com                                                                                                                                                                                     21
+OptionTag    Option                 Size1   Type      Notes                                              Default2
+
+                                                                                                         0 (zero), no minimum
+3            MinQty                 4       Integer   MinQty must be a round lot.
+                                                                                                         quantity
+                                                      R = Retail Designated Order                        Space, use port
+4            CustomerType           1       Char
+                                                      N = Not Retail Designated default                default
+
+                                                      Represents the portion of your order that you      0 (zero), no Max
+5            MaxFloor               4       Integer
+                                                      wish to have displayed.                            Floor
+                                                      L = limit default
+                                                      P = market peg
+6            PriceType              1       Char      M = midpoint peg                                   ‘L’, limit
+                                                      R = primary peg
+                                                      Q = market maker peg m  midpoint
+                                            Signed                                                       0 (zero), no peg
+7            PegOffset              4                 Offset amount for the pegged value.
+                                            Price                                                        offset
+                                                                                                         0 (zero), no
+9            DiscretionPrice        8       Price     Discretion price for Discretionary Order.
+                                                                                                         discretion price
+                                                      L = limit default
+                                                      P = market peg
+10           DiscretionPriceType    1       Alpha                                                        ‘L’, limit
+                                                      M = midpoint peg
+                                                      R = primary peg
+                                            Signed    Offset amount for the pegged value of the
+11           DiscretionPegOffset    4                                                                    0 (zero), no offset
+                                            Price     Discretionary Price.
+                                                      P = Post Only (Midpoint Post Only not available
+12           PostOnly               1       Alpha     on BX)                                             ‘N’, no post only
+                                                      N = No default
+                                                                                                         0 (zero), no random
+13           RandomReserves         4       Integer   Shares to do random reserve with.
+                                                                                                         reserves
+14           Route                  4       Alpha                                                        Not applicable
+                                                      Seconds to live. Must be less than 86400           0 (zero), no expire
+15           ExpireTime             4       Integer
+                                                      (number of seconds in a day)                       time
+                                                      Y = yes                                            Space, use port
+16           TradeNow               1       Alpha
+                                                      N = no default                                   default
+
+                                                      I = imbalance only (CrossType O and C)
+                                                      O = retail order type 1 (CrossType R)
+                                                      T = retail order type 2 (CrossType R)
+                                                      Q = retail price improvement (CrossType R)         Space, no handling
+17           HandleInst             1       Alpha
+                                                      B = Etended Life + Continuous (CrossType E)       instructions
+                                                      D = Direct Listing Capital Raise (CrossType H)
+                                                      R= Retail Price Improvement, Hidden Price
+                                                      Improvement Indicator (CrossType R)
+                                                      “0” = 0-0.2%
+                                                      “1” = 0.2%-1%
+                                                      “2” = 1%-2%
+18           BBO Weight Indicator   1       Alpha     “3”  greater than 2%                              Not applicable
+                                                      space = unspecified (default)
+                                                      “S” = Sets the QBBO while joining the NBBO
+                                                      “N” = Improves the NBBO upon entry
+                                                      Used in the Order Restated Message only.
+22           Display Quantity       4       Numeric   Represents an update of an order’s displayed       Not applicable
+                                                      quantity (i.e. an order with reserves).
+
+
+
+
+nasdaq.com                                                                                                                     22
+OptionTag     Option                       Size1     Type           Notes                                              Default2
+
+                                                                    Used in the Order Restated Message only.
+23            Display Price                8        Price           Represents an update of an order’s displayed      Not applicable
+                                                                    price.
+                                                                    Customer Group ID – identifies specific entity
+24            Group ID                     2        Numeric                                                           0 zero, no Group ID
+                                                                    within customer firm
+                                                                    Shares located for short sale order
+25            Shares Located               1        Alpha           Y = yes                                           ‘N’, no
+                                                                    N = no default
+                                                                    Broker code from which the locate has been
+26            Locate Broker                4        Alpha                                                             Not applicable
+                                                                    acquired for short sale orders
+                                                                    B= buy
+                                                                    S = sell
+27            Side                         1        Alpha                                                             Not applicable
+                                                                    T = sell short
+                                                                    E = sell short eempt
+                                                                    User Reference Index - identifies the channel
+28            UserRefIdx                   1        Numeric                                                           Not applicable
+                                                                    within the given port
+
+
+
+
+Appendix C – Order Cancel Reasons
+Order Cancel Reason
+
+Reason      Explanation
+
+'D'         This order cannot be executed because of a regulatory restriction (e.g.: trade through restrictions).
+'E'         Closed. Any DAY order that was received after the closing cross is complete in a given symbol will receive this cancel reason.
+'F'         Post Only Cancel. This Post Only order was cancelled because it would have been price slid for NMS.
+            Post Only Cancel. This Post Only order was cancelled because it would have been price slid due to a contra side displayed
+'G'
+            order on the book
+'H'         Halted. The on-open order was canceled because the symbol remained halted after the opening cross completed.
+'I'         Immediate or Cancel Order.
+'K'         This order cannot be executed because of Market Collars
+            Self Match Prevention. The order was cancelled because it would have executed with an existing order entered by the same
+'Q'
+            MPID.
+'S'         Supervisory. The order was manually canceled or reduced by an NASDAQ supervisory terminal.
+'T'         Timeout. The Time In Force for this order has expired
+'U'         User requested cancel. Sent in response to a Cancel Request Message.
+'X'         Open Protection. Orders that are cancelled as a result of the Opening Price Protection Threshold.
+'Z'         System cancel. This order was cancelled by the system.
+‘e’         Company Direct Listing Capital Raise order exceeds allowable shares offered
+
+
+
+
+Appendix D – Order Reject Reasons
+Order Reject Reasons
+
+Reason      Explanation
+
+0x0001      Quote Unavailable
+0x0002      Destination Closed
+0x0003      Invalid Display
+
+
+
+nasdaq.com                                                                                                                                   23
+Order Reject Reasons
+
+Reason    Explanation
+
+0x0004   Invalid Max Floor
+0x0005   Invalid Peg Type
+0x0006   Fat Finger
+0x0007   Halted
+0x0008   ISO Not Allowed
+0x0009   Invalid Side
+0x000A   Processing Error
+0x000B   Cancel Pending
+0x000C   Firm Not Authorized
+0x000D   Invalid Min Quantity
+0x000E   No Closing Reference Price
+0x000F   Other
+0x0010   Cancel Not Allowed
+0x0011   Pegging Not Allowed
+0x0012   Crossed Market
+0x0013   Invalid Quantity
+0x0014   Invalid Cross Order
+0x0015   Replace Not Allowed
+0x0016   Routing Not Allowed
+0x0017   Invalid Symbol
+0x0018   Test
+0x0019   Late LOC Too Aggressive
+0x001A   Retail Not Allowed
+0x001B   Invalid Midpoint Post Only Price
+0x001C   Invalid Destination
+0x001D   Invalid Price
+0x001E   Shares Exceed Threshold
+0x001F   Exceeds Maximum Allowed Notional Value
+0x0020   Risk: Aggregate Exposure Exceeded
+0x0021   Risk: Market Impact
+0x0022   Risk: Restricted Stock
+0x0023   Risk: Short Sell Restricted
+0x0024   Risk: ISO Not Allowed
+0x0025   Risk: Exceeds ADV Limit
+0x0026   Risk: Fat Finger
+0x0027   Risk: Locate Required
+0x0028   Risk: Symbol Message Rate Restriction
+0x0029   Risk: Port Message Rate Restriction
+0x002A   Risk: Duplicate Message Rate Restriction
+0x002B    Risk: Short Sell Not Allowed
+0x002C   Risk: Market Order Not Allowed
+
+
+
+nasdaq.com                                          24
+ Order Reject Reasons
+
+ Reason       Explanation
+
+ 0x002D       Risk: Pre-Market Not Allowed
+ 0x002E       Risk: Post-Market Not Allowed
+ 0x002F       Risk: Short Sell Exempt Not Allowed
+ 0x0030       Risk: Single Order Notional Exceeded
+ 0x0031       Risk: Max Quantity Exceeded
+ 0x0032       Reg SHO State Not Available
+
+
+
+
+Appendix E – Liquidity Codes
+ Liquidity Flags
+
+ Flag         Value                                                             Markets
+
+ A            Added                                                             All markets
+ C            Closing Cross                                                     Nasdaq only
+ e            Retail designated execution that added displayed liquidity        Nasdaq/BX only
+ H            Halt/IPO Cross                                                    Nasdaq only
+ i            After hours closing cross                                         Nasdaq only
+ J            Non-displayed adding liquidity                                    All markets
+ j            RPI (Retail Price Improving order provides liquidity             BX only
+ k            Added liquidity via a midpoint order                              All markets
+ K            Halt Cross                                                        Nasdaq only
+ L            Closing Cross (imbalance-only)                                    Nasdaq only
+ M            Opening Cross (imbalance-only)                                    Nasdaq only
+ m            Removed liquidity at a midpoint                                   All markets
+ N            Passive midpoint execution                                        Nasdaq/BX only
+ n            Midpoint Extended Life Order execution                            Nasdaq only
+ O            Opening Cross                                                     Nasdaq only
+ p            Removed price improving non-displayed liquidity                   BX only
+ q            RMO Retail Order removes non-RPI midpoint liquidity               BX only
+ R            Removed                                                           All markets
+ r            Retail Order removes RPI liquidity                                BX only
+              Retail Order removes price improving non-displayed liquidity
+ t                                                                              BX only
+              other than RPI liquidity
+ u            Added non-displayed liquidity via a Reserve order                 All markets
+ 0            Supplemental order execution                                      Nasdaq only
+ 7            Displayed, liquidity-adding order improves the NBBO               Nasdaq/BX only
+              Displayed, liquidity-adding order sets the QBBO while joining
+ 8                                                                              Nasdaq/BX only
+              the NBBO
+ 1            RPI order provides liquidity, No RPII                             BX only
+
+
+
+
+© Copyright 2024, The NASDAQ Group, Inc. All rights reserved. 0524 | 0918-Q24
+
+
+nasdaq.com                                                                                       25
